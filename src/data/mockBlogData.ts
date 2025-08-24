@@ -1,4 +1,10 @@
 
+import blogPost1 from '@/assets/blog-post-1.jpg';
+import blogPost2 from '@/assets/blog-post-2.jpg';
+import blogPost3 from '@/assets/blog-post-3.jpg';
+import blogPost4 from '@/assets/blog-post-4.jpg';
+import blogPost5 from '@/assets/blog-post-5.jpg';
+
 // Mock data simulating AEM Content Fragments for blog posts
 export interface BlogPost {
   id: string;
@@ -98,7 +104,7 @@ The future of React development is here, and Server Components are leading the w
     readTime: 12,
     tags: ["React", "Server Components", "Next.js", "Performance", "Full-Stack"],
     category: "Development",
-    featuredImage: "/src/assets/blog-post-1.jpg",
+    featuredImage: blogPost1,
     featured: true
   },
   {
@@ -235,7 +241,7 @@ React Query v5 has made my applications faster, more reliable, and significantly
     readTime: 10,
     tags: ["React Query", "TanStack", "Data Fetching", "Performance", "State Management"],
     category: "Development",
-    featuredImage: "/src/assets/blog-post-2.jpg",
+    featuredImage: blogPost2,
     featured: true
   },
   {
@@ -411,7 +417,7 @@ These patterns have made my React code more maintainable, caught bugs at compile
     readTime: 11,
     tags: ["TypeScript", "React", "Type Safety", "Generics", "Development"],
     category: "Development",
-    featuredImage: "/src/assets/blog-post-3.jpg",
+    featuredImage: blogPost3,
     featured: false
   },
   {
@@ -620,7 +626,7 @@ These concurrent features have made my applications feel significantly more resp
     readTime: 9,
     tags: ["React 18", "Concurrent Features", "Performance", "useTransition", "Suspense"],
     category: "Development",
-    featuredImage: "/src/assets/blog-post-4.jpg",
+    featuredImage: blogPost4,
     featured: false
   },
   {
@@ -888,7 +894,7 @@ The choice depends on your priorities: performance vs developer experience vs te
     readTime: 8,
     tags: ["CSS-in-JS", "Styled Components", "Emotion", "Vanilla Extract", "Performance"],
     category: "Development",
-    featuredImage: "/src/assets/blog-post-5.jpg",
+    featuredImage: blogPost5,
     featured: false
   }
 ];
