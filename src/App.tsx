@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Headless Blog with AEM + React integration
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
