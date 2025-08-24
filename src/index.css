@@ -36,7 +36,38 @@ All colors MUST be HSL.
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Blog-specific design tokens */
+    --blog-primary: 220 98% 61%;
+    --blog-primary-foreground: 210 40% 98%;
+    --blog-primary-muted: 220 98% 61% / 0.1;
+    
+    --blog-secondary: 260 60% 65%;
+    --blog-secondary-foreground: 210 40% 98%;
+    
+    --blog-surface: 0 0% 98%;
+    --blog-surface-elevation: 0 0% 100%;
+    
+    --blog-text-primary: 222.2 84% 4.9%;
+    --blog-text-secondary: 215.4 16.3% 46.9%;
+    --blog-text-muted: 215.4 16.3% 56.9%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--blog-primary)), hsl(var(--blog-secondary)));
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--blog-surface)) 0%, hsl(var(--blog-surface-elevation)) 100%);
+    
+    /* Shadows */
+    --shadow-blog-card: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-blog-card-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    
+    /* Typography */
+    --font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
     --sidebar-background: 0 0% 98%;
 
@@ -101,5 +132,21 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }

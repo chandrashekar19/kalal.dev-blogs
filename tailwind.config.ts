@@ -61,7 +61,35 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				blog: {
+					primary: 'hsl(var(--blog-primary))',
+					'primary-foreground': 'hsl(var(--blog-primary-foreground))',
+					'primary-muted': 'hsl(var(--blog-primary-muted))',
+					secondary: 'hsl(var(--blog-secondary))',
+					'secondary-foreground': 'hsl(var(--blog-secondary-foreground))',
+					surface: 'hsl(var(--blog-surface))',
+					'surface-elevation': 'hsl(var(--blog-surface-elevation))',
+					'text-primary': 'hsl(var(--blog-text-primary))',
+					'text-secondary': 'hsl(var(--blog-text-secondary))',
+					'text-muted': 'hsl(var(--blog-text-muted))'
 				}
+			},
+			backgroundImage: {
+				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-subtle': 'var(--gradient-subtle)'
+			},
+			boxShadow: {
+				'blog-card': 'var(--shadow-blog-card)',
+				'blog-card-hover': 'var(--shadow-blog-card-hover)'
+			},
+			fontFamily: {
+				'heading': 'var(--font-heading)',
+				'body': 'var(--font-body)'
+			},
+			transitionTimingFunction: {
+				'smooth': 'var(--transition-smooth)',
+				'spring': 'var(--transition-spring)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
