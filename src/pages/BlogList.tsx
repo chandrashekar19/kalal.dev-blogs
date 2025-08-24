@@ -49,12 +49,12 @@ const BlogList = () => {
             </div>
             
             <h1 className="text-4xl md:text-6xl font-heading font-bold text-blog-primary-foreground mb-6 leading-tight">
-              AEM + React
-              <span className="block text-blog-secondary-foreground">Development Blog</span>
+              Chandrashekar's
+              <span className="block text-blog-secondary-foreground">Tech Insights</span>
             </h1>
             
             <p className="text-xl text-blog-primary-foreground/90 max-w-2xl mx-auto mb-8 leading-relaxed">
-              Discover the latest insights, tutorials, and best practices for building modern web experiences with Adobe Experience Manager and React.
+              Explore cutting-edge web development insights, React best practices, and modern frontend technologies from a passionate developer's perspective.
             </p>
             
             <Button 
