@@ -1134,14 +1134,417 @@ describe('ArticlePage', () => {
     category: "Development",
     featuredImage: blogHeroImage,
     featured: true
+  },
+  {
+    id: "7",
+    title: "Persisting React State Across Page Refreshes: localStorage Patterns",
+    slug: "persisting-react-state-page-refresh-localstorage",
+    excerpt: "Learn effective patterns for persisting React state using localStorage, including custom hooks and best practices for maintaining state across browser sessions.",
+    content: `# Persisting React State Across Page Refreshes: localStorage Patterns
+
+One of the most common challenges in React development is maintaining state when users refresh the page. After building several production apps, I've developed reliable patterns for state persistence using localStorage.
+
+## The Problem with Default React State
+
+By default, React state is ephemeral. When users refresh the page, all state is lost:
+
+\`\`\`javascript
+const [cart, setCart] = useState([]); // Lost on refresh!
+\`\`\`
+
+This creates poor user experience, especially for:
+- Shopping carts
+- Form data
+- User preferences
+- Search filters
+- Theme selections
+
+## Basic localStorage Integration
+
+Here's the fundamental pattern I use:
+
+\`\`\`javascript
+const [cart, setCart] = useState(() => {
+  const savedCart = localStorage.getItem('cart');
+  return savedCart ? JSON.parse(savedCart) : [];
+});
+
+useEffect(() => {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}, [cart]);
+\`\`\`
+
+### Key Points:
+- Use lazy initial state to read from localStorage only once
+- Parse JSON when reading, stringify when writing
+- Update localStorage whenever state changes
+
+## Custom usePersistState Hook
+
+For better reusability, I created this custom hook:
+
+\`\`\`typescript
+import { useState, useEffect, useMemo } from 'react';
+
+export function usePersistState<T>(
+  initialValue: T, 
+  storageKey: string
+): [T, (newState: T) => void] {
+  
+  const prefixedKey = \`state:\${storageKey}\`;
+  
+  // Initialize state from localStorage or use default
+  const _initialValue = useMemo(() => {
+    try {
+      const storedValue = localStorage.getItem(prefixedKey);
+      if (storedValue !== null) {
+        return JSON.parse(storedValue);
+      }
+    } catch (error) {
+      console.warn(\`Failed to parse localStorage value for key "\${prefixedKey}"\`, error);
+    }
+    return initialValue;
+  }, [prefixedKey, initialValue]);
+
+  const [state, setState] = useState<T>(_initialValue);
+
+  // Persist state changes to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(prefixedKey, JSON.stringify(state));
+    } catch (error) {
+      console.warn(\`Failed to save to localStorage for key "\${prefixedKey}"\`, error);
+    }
+  }, [state, prefixedKey]);
+
+  return [state, setState];
+}
+\`\`\`
+
+## Usage Examples
+
+### Shopping Cart
+\`\`\`javascript
+function ShoppingCart() {
+  const [cart, setCart] = usePersistState([], 'shopping-cart');
+  
+  const addToCart = (product) => {
+    setCart(prevCart => [...prevCart, product]);
+  };
+
+  const removeFromCart = (productId) => {
+    setCart(prevCart => prevCart.filter(item => item.id !== productId));
+  };
+
+  return (
+    <div>
+      {cart.map(item => (
+        <CartItem key={item.id} item={item} onRemove={removeFromCart} />
+      ))}
+      <button onClick={() => addToCart(newProduct)}>
+        Add Product
+      </button>
+    </div>
+  );
+}
+\`\`\`
+
+### User Preferences
+\`\`\`javascript
+function UserSettings() {
+  const [preferences, setPreferences] = usePersistState({
+    theme: 'light',
+    language: 'en',
+    notifications: true
+  }, 'user-preferences');
+
+  const updateTheme = (theme) => {
+    setPreferences(prev => ({ ...prev, theme }));
+  };
+
+  return (
+    <div>
+      <ThemeSelector 
+        value={preferences.theme} 
+        onChange={updateTheme} 
+      />
+    </div>
+  );
+}
+\`\`\`
+
+This pattern has dramatically improved user experience in my applications by maintaining context across browser sessions while keeping the implementation clean and reusable.`,
+    author: {
+      name: "Chandrashekar",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
+    },
+    publishedDate: "2024-01-12",
+    readTime: 8,
+    tags: ["React", "localStorage", "State Management", "Hooks", "Persistence"],
+    category: "Development",
+    featuredImage: blogPost4,
+    featured: false
+  },
+  {
+    id: "8",
+    title: "Essential Git Commands Cheat Sheet for Developers",
+    slug: "essential-git-commands-cheat-sheet-developers",
+    excerpt: "A comprehensive guide to Git commands every developer needs to know, from basic operations to advanced workflows for effective version control.",
+    content: `# Essential Git Commands Cheat Sheet for Developers
+
+Git is the backbone of modern software development. After 3 years of React development, I've compiled the essential Git commands that every developer should master. This is my go-to reference guide.
+
+## Getting Started with Git
+
+### Repository Initialization
+\`\`\`bash
+git init                     # Initialize a new Git repository
+git clone [url]             # Clone a repository into a new directory
+git remote -v               # List remote repositories with URLs
+git remote add [name] [url] # Add a new remote repository
+git remote remove [name]    # Remove a remote repository
+\`\`\`
+
+## Daily Git Workflow Commands
+
+### Basic Operations
+\`\`\`bash
+git status                  # Display working directory and staging area status
+git add [file]             # Add a file to the staging area
+git add .                  # Add all changes to staging area
+git commit -m "[message]"  # Record changes with a descriptive message
+git push                   # Upload local repository content to remote
+git pull                   # Fetch and merge changes from remote repository
+\`\`\`
+
+### Configuration
+\`\`\`bash
+git config --global user.name "[name]"        # Set your name
+git config --global user.email "[email]"      # Set your email
+git config --list                             # Show all configuration settings
+\`\`\`
+
+## Branch Management
+
+### Creating and Switching Branches
+\`\`\`bash
+git branch                    # List all local branches
+git branch [branch-name]      # Create a new branch
+git checkout [branch]         # Switch to specified branch
+git checkout -b [branch]      # Create new branch and switch to it
+git branch -d [branch]        # Delete specified branch safely
+git branch -D [branch]        # Force delete specified branch
+\`\`\`
+
+### Merging and Integration
+\`\`\`bash
+git merge [branch]           # Merge specified branch into current branch
+git merge --abort            # Abort current merge process
+git rebase [branch]          # Reapply commits on top of another branch
+git cherry-pick [commit]     # Apply a specific commit to current branch
+\`\`\`
+
+## Advanced Git Operations
+
+### Stashing Changes
+\`\`\`bash
+git stash                    # Temporarily save uncommitted changes
+git stash pop                # Apply most recent stash and remove it
+git stash list               # Show all stashed changes
+git stash drop               # Delete a specific stash
+git stash clear              # Delete all stashes
+\`\`\`
+
+### History and Information
+\`\`\`bash
+git log                      # Display commit history
+git log --oneline            # Compact commit history
+git log --graph              # Show branch structure
+git diff                     # Show changes between commits/files
+git show [commit]            # Display information about a commit
+\`\`\`
+
+These commands form the foundation of effective version control. Master them, and your development workflow will become significantly more efficient and reliable.`,
+    author: {
+      name: "Chandrashekar",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
+    },
+    publishedDate: "2024-01-10",
+    readTime: 12,
+    tags: ["Git", "Version Control", "Developer Tools", "Workflow", "Commands"],
+    category: "Tools",
+    featuredImage: blogPost5,
+    featured: false
+  },
+  {
+    id: "9",
+    title: "Advanced React State Patterns: Custom Hooks for Better Code",
+    slug: "advanced-react-state-patterns-custom-hooks",
+    excerpt: "Explore advanced state management patterns in React using custom hooks, including state persistence, complex state logic, and performance optimizations.",
+    content: `# Advanced React State Patterns: Custom Hooks for Better Code
+
+After working with React for 3 years, I've discovered that custom hooks are the secret to writing clean, reusable, and maintainable code. Let me share the advanced patterns I use in production applications.
+
+## Why Custom Hooks Matter
+
+Custom hooks allow us to:
+- Extract component logic into reusable functions
+- Share stateful logic between components
+- Separate concerns and improve testability
+- Create domain-specific abstractions
+
+## Advanced usePersistState Hook
+
+Building on localStorage concepts, here's my production-ready persistent state hook:
+
+\`\`\`typescript
+import { useState, useEffect, useCallback, useRef } from 'react';
+
+interface UsePersistStateOptions {
+  serialize?: (value: any) => string;
+  deserialize?: (value: string) => any;
+  onError?: (error: Error, key: string) => void;
+}
+
+export function usePersistState<T>(
+  key: string,
+  defaultValue: T,
+  options: UsePersistStateOptions = {}
+): [T, (value: T | ((prev: T) => T)) => void] {
+  const {
+    serialize = JSON.stringify,
+    deserialize = JSON.parse,
+    onError = console.error
+  } = options;
+
+  const [state, setState] = useState<T>(() => {
+    try {
+      const item = localStorage.getItem(key);
+      return item ? deserialize(item) : defaultValue;
+    } catch (error) {
+      onError(error as Error, key);
+      return defaultValue;
+    }
+  });
+
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    try {
+      localStorage.setItem(key, serialize(state));
+    } catch (error) {
+      onError(error as Error, key);
+    }
+  }, [key, state, serialize, onError]);
+
+  const setValue = useCallback((value: T | ((prev: T) => T)) => {
+    setState(value);
+  }, []);
+
+  return [state, setValue];
+}
+\`\`\`
+
+## Shopping Cart Hook Example
+
+Real-world example combining multiple patterns:
+
+\`\`\`typescript
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+export function useShoppingCart() {
+  const [items, setItems] = usePersistState<CartItem[]>('shopping-cart', []);
+
+  const addItem = useCallback((product: Omit<CartItem, 'quantity'>) => {
+    setItems(currentItems => {
+      const existingItem = currentItems.find(item => item.id === product.id);
+      
+      if (existingItem) {
+        return currentItems.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      
+      return [...currentItems, { ...product, quantity: 1 }];
+    });
+  }, [setItems]);
+
+  const removeItem = useCallback((productId: string) => {
+    setItems(currentItems => 
+      currentItems.filter(item => item.id !== productId)
+    );
+  }, [setItems]);
+
+  const updateQuantity = useCallback((productId: string, quantity: number) => {
+    if (quantity <= 0) {
+      removeItem(productId);
+      return;
+    }
+
+    setItems(currentItems =>
+      currentItems.map(item =>
+        item.id === productId ? { ...item, quantity } : item
+      )
+    );
+  }, [setItems, removeItem]);
+
+  const clearCart = useCallback(() => {
+    setItems([]);
+  }, [setItems]);
+
+  const totalPrice = useMemo(() =>
+    items.reduce((total, item) => total + (item.price * item.quantity), 0),
+    [items]
+  );
+
+  return {
+    items,
+    addItem,
+    removeItem,
+    updateQuantity,
+    clearCart,
+    totalPrice,
+    isEmpty: items.length === 0
+  };
+}
+\`\`\`
+
+These patterns have transformed how I build React applications, making code more maintainable, testable, and reusable across projects.`,
+    author: {
+      name: "Chandrashekar",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
+    },
+    publishedDate: "2024-01-08",
+    readTime: 15,
+    tags: ["React", "Custom Hooks", "State Management", "TypeScript", "Patterns"],
+    category: "Development",
+    featuredImage: blogPost3,
+    featured: false
   }
 ];
 
-export const categories = ["All", "Development", "Content Management", "Design"];
+export const categories = ["All", "Development", "Content Management", "Design", "Tools"];
 
 export const tags = [
   "React", "TypeScript", "Performance", "Server Components", "Next.js",
   "React Query", "TanStack", "Data Fetching", "State Management", "Type Safety",
   "Generics", "React 18", "Concurrent Features", "useTransition", "Suspense",
-  "CSS-in-JS", "Styled Components", "Emotion", "Vanilla Extract", "Development"
+  "CSS-in-JS", "Styled Components", "Emotion", "Vanilla Extract", "Development",
+  "localStorage", "Hooks", "Persistence", "Git", "Version Control", "Developer Tools",
+  "Workflow", "Commands", "Custom Hooks", "Patterns"
 ];
