@@ -1,4 +1,3 @@
-
 import blogPost1 from '@/assets/blog-post-1.jpg';
 import blogPost2 from '@/assets/blog-post-2.jpg';
 import blogPost3 from '@/assets/blog-post-3.jpg';
@@ -423,811 +422,526 @@ These patterns have made my React code more maintainable, caught bugs at compile
   },
   {
     id: "4",
-    title: "React 18 Concurrent Features: Practical Implementation Guide",
+    title: "JavaScript A-Z: Complete Developer's Reference Guide",
     slug: "react-18-concurrent-features-practical-guide",
-    excerpt: "Master React 18's concurrent features including Suspense, useDeferredValue, and useTransition to build more responsive user interfaces.",
-    content: `# React 18 Concurrent Features: Practical Implementation Guide
+    excerpt: "A comprehensive A-Z guide covering essential JavaScript concepts, APIs, and terminologies that every developer should know in 2024.",
+    content: `# JavaScript A-Z: Complete Developer's Reference Guide
 
-React 18 introduced concurrent features that fundamentally change how we think about rendering and user interactions. After implementing these in production apps, I want to share practical patterns that actually work.
+As a developer working with JavaScript daily, I've compiled this comprehensive A-Z reference guide covering the essential concepts, APIs, and terminologies that every JavaScript developer should master in 2024.
 
-## Understanding Concurrency in React
+## A - API (Application Programming Interface), Async (Asynchronous)
 
-Concurrent rendering allows React to interrupt, pause, and resume rendering work. This enables:
+**API (Application Programming Interface)**: A set of protocols and tools for building software applications. APIs define how different software components should interact.
 
-- **Non-blocking updates**: Keep UI responsive during heavy operations
-- **Prioritized rendering**: Critical updates happen first
-- **Better user experience**: Smoother interactions and transitions
+**Async (Asynchronous)**: Programming pattern that allows code to run without blocking the main thread, enabling better performance and user experience.
 
-## 1. useTransition for Non-Urgent Updates
+## B - BOM (Browser Object Model), Blob, Bubbling
 
-\`\`\`javascript
-import { useState, useTransition } from 'react';
+**BOM (Browser Object Model)**: Represents the browser window and provides access to browser-specific objects like window, navigator, and location.
 
-function SearchResults() {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
-  const [isPending, startTransition] = useTransition();
+**Blob**: Binary Large Object - represents immutable raw data, often used for file handling and data manipulation.
 
-  const handleSearch = (value: string) => {
-    setQuery(value); // Urgent: update input immediately
-    
-    startTransition(() => {
-      // Non-urgent: expensive search can be interrupted
-      setResults(performExpensiveSearch(value));
-    });
-  };
+**Bubbling**: Event propagation phase where events bubble up from the target element to the document root.
 
-  return (
-    <div>
-      <input
-        value={query}
-        onChange={(e) => handleSearch(e.target.value)}
-        placeholder="Search..."
-      />
-      
-      {isPending && <div>Searching...</div>}
-      
-      <div className="results">
-        {results.map(result => (
-          <SearchResultCard key={result.id} result={result} />
-        ))}
-      </div>
-    </div>
-  );
-}
-\`\`\`
+## C - DOM (Document Object Model), Classes
 
-## 2. useDeferredValue for Smooth UI
+**DOM (Document Object Model)**: Programming interface for HTML documents, representing the page structure as a tree of objects.
 
-\`\`\`javascript
-import { useDeferredValue, useMemo } from 'react';
+**Classes**: ES6 feature providing a cleaner syntax for creating constructor functions and implementing inheritance.
 
-function ProductList({ searchTerm }: { searchTerm: string }) {
-  const deferredSearchTerm = useDeferredValue(searchTerm);
-  
-  const filteredProducts = useMemo(() => {
-    // This expensive operation won't block typing
-    return products.filter(product =>
-      product.name.toLowerCase().includes(deferredSearchTerm.toLowerCase())
-    );
-  }, [deferredSearchTerm]);
+## D - Data Types, DOMContentLoaded, Debounce
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {filteredProducts.map(product => (
-        <ProductCard 
-          key={product.id} 
-          product={product}
-          isStale={searchTerm !== deferredSearchTerm}
-        />
-      ))}
-    </div>
-  );
-}
-\`\`\`
+**Data Types**: JavaScript has primitive types (string, number, boolean, null, undefined, symbol, bigint) and reference types (objects, arrays, functions).
 
-## 3. Suspense for Better Loading States
+**DOMContentLoaded**: Event fired when the HTML document has been completely loaded and parsed.
 
-\`\`\`javascript
-import { Suspense } from 'react';
+**Debounce**: Technique to limit function execution by delaying it until after a specified time has passed since the last invocation.
 
-// Component that fetches data
-function UserProfile({ userId }: { userId: string }) {
-  const user = use(fetchUser(userId)); // React 18 'use' hook
-  
-  return (
-    <div className="profile">
-      <img src={user.avatar} alt={user.name} />
-      <h1>{user.name}</h1>
-      <p>{user.bio}</p>
-    </div>
-  );
-}
+## E - Events, ECMAScript, ES6 (ECMAScript 2015)
 
-// Loading fallback
-function ProfileSkeleton() {
-  return (
-    <div className="profile animate-pulse">
-      <div className="w-20 h-20 bg-gray-200 rounded-full"></div>
-      <div className="h-6 bg-gray-200 rounded w-32 mt-4"></div>
-      <div className="h-4 bg-gray-200 rounded w-48 mt-2"></div>
-    </div>
-  );
-}
+**Events**: Actions that can be detected by JavaScript, such as clicks, key presses, or page loads.
 
-// App component
-function App() {
-  return (
-    <div>
-      <Suspense fallback={<ProfileSkeleton />}>
-        <UserProfile userId="123" />
-      </Suspense>
-    </div>
-  );
-}
-\`\`\`
+**ECMAScript**: The standard that JavaScript is based on, defining syntax, types, statements, keywords, and objects.
 
-## 4. Practical Performance Patterns
+**ES6 (ECMAScript 2015)**: Major update introducing classes, modules, arrow functions, destructuring, and many other features.
 
-### Concurrent-Safe State Updates
+## F - Fetch API, FormData, Function
 
-\`\`\`javascript
-function OptimizedCounter() {
-  const [count, setCount] = useState(0);
-  const [isPending, startTransition] = useTransition();
+**Fetch API**: Modern way to make HTTP requests, replacing XMLHttpRequest with a Promise-based interface.
 
-  const handleIncrement = () => {
-    // Urgent: immediate feedback
-    setCount(c => c + 1);
-    
-    startTransition(() => {
-      // Non-urgent: analytics, logging, etc.
-      trackUserInteraction('counter_increment');
-      updateDatabase(count + 1);
-    });
-  };
+**FormData**: Web API for capturing form fields and their values, often used for file uploads.
 
-  return (
-    <div>
-      <button onClick={handleIncrement} disabled={isPending}>
-        Count: {count} {isPending && '(Saving...)'}
-      </button>
-    </div>
-  );
-}
-\`\`\`
+**Function**: First-class objects in JavaScript that can be stored in variables, passed as arguments, and returned from other functions.
 
-### Smart Data Fetching with Suspense
+## G - Geolocation API, Generators, GET (HTTP method)
 
-\`\`\`javascript
-// Custom hook for suspense-compatible data fetching
-function useSuspenseQuery<T>(
-  queryKey: string[],
-  queryFn: () => Promise<T>
-) {
-  const data = use(
-    React.useMemo(() => {
-      return queryClient.fetchQuery({ queryKey, queryFn });
-    }, [queryKey, queryFn])
-  );
-  
-  return data;
-}
+**Geolocation API**: Web API that allows web applications to access the user's geographical location.
 
-function PostsList({ category }: { category: string }) {
-  const posts = useSuspenseQuery(
-    ['posts', category],
-    () => fetchPostsByCategory(category)
-  );
+**Generators**: Functions that can be paused and resumed, useful for creating iterators and managing asynchronous flow.
 
-  return (
-    <div>
-      {posts.map(post => (
-        <PostCard key={post.id} post={post} />
-      ))}
-    </div>
-  );
-}
-\`\`\`
+**GET (HTTP method)**: HTTP method used to retrieve data from a server without causing side effects.
 
-## Key Takeaways from Production Use
+## H - Hoisting, History API
 
-1. **Use Transitions Sparingly**: Only for truly non-urgent updates
-2. **Combine with useMemo**: Defer expensive computations effectively  
-3. **Suspense Boundaries**: Place them strategically for good UX
-4. **Test Performance**: Always measure the impact of concurrent features
+**Hoisting**: JavaScript behavior where variable and function declarations are moved to the top of their scope during compilation.
 
-These concurrent features have made my applications feel significantly more responsive, especially on slower devices and networks.`,
+**History API**: Web API that provides access to the browser's session history, enabling navigation without page reloads.
+
+## I - IIFE (Immediately Invoked Function Expression), Iterables
+
+**IIFE (Immediately Invoked Function Expression)**: Function that runs as soon as it's defined, often used to create isolated scopes.
+
+**Iterables**: Objects that implement the iterator protocol, allowing them to be iterated over with for...of loops.
+
+## J - JSON (JavaScript Object Notation)
+
+**JSON (JavaScript Object Notation)**: Lightweight data interchange format that's easy for humans to read and write.
+
+## K - Key-Value, Keyboard Events, Koa (JavaScript web framework)
+
+**Key-Value**: Data structure pattern where data is stored as pairs of keys and their corresponding values.
+
+**Keyboard Events**: Events triggered by keyboard interactions like keydown, keyup, and keypress.
+
+**Koa (JavaScript web framework)**: Modern web framework for Node.js that uses async functions and provides a more expressive API.
+
+## L - LocalStorage, Let (Variable Declaration), Loops
+
+**LocalStorage**: Web Storage API that allows storing data in the browser with no expiration time.
+
+**Let (Variable Declaration)**: Block-scoped variable declaration introduced in ES6, replacing var in many use cases.
+
+**Loops**: Control structures for repeating code execution, including for, while, do-while, and for...in/for...of loops.
+
+## M - Maps (Data structure), Mocha (JavaScript testing framework), Modules
+
+**Maps (Data structure)**: ES6 collection type that holds key-value pairs and remembers insertion order.
+
+**Mocha (JavaScript testing framework)**: Feature-rich testing framework for Node.js and browsers.
+
+**Modules**: Way to organize and reuse code by exporting and importing functionality between files.
+
+## N - Node.js (JavaScript runtime), NaN (Not a Number), Nullish Coalescing Operator
+
+**Node.js (JavaScript runtime)**: Runtime environment that allows JavaScript to run on servers and build backend applications.
+
+**NaN (Not a Number)**: Special numeric value representing an invalid or undefined mathematical operation.
+
+**Nullish Coalescing Operator**: Logical operator (??) that returns the right-hand operand when the left is null or undefined.
+
+## O - Objects, Object Methods, Operator Overloading
+
+**Objects**: Complex data types that store collections of key-value pairs and are fundamental to JavaScript.
+
+**Object Methods**: Functions that are properties of objects, providing behavior to object instances.
+
+**Operator Overloading**: Ability to define custom behavior for operators when applied to user-defined types.
+
+## P - Promises, Proxy, Polyfills
+
+**Promises**: Objects representing the eventual completion or failure of asynchronous operations.
+
+**Proxy**: ES6 feature that allows intercepting and customizing operations on objects like property access and assignment.
+
+**Polyfills**: Code that implements features on web browsers that don't natively support them.
+
+## Q - QuerySelector, Query Parameters, Queues (Data structure)
+
+**QuerySelector**: DOM method for selecting elements using CSS selectors.
+
+**Query Parameters**: Part of a URL that assigns values to specified parameters, appearing after the question mark.
+
+**Queues (Data structure)**: First-In-First-Out (FIFO) data structure commonly used in algorithms and asynchronous programming.
+
+## R - Recursion, RegExp (Regular Expressions)
+
+**Recursion**: Programming technique where a function calls itself to solve smaller instances of the same problem.
+
+**RegExp (Regular Expressions)**: Patterns used to match character combinations in strings, useful for validation and text processing.
+
+## S - Storage API, Symbols, Spread Syntax
+
+**Storage API**: Web APIs (localStorage, sessionStorage) for storing data in the browser.
+
+**Symbols**: Primitive data type introduced in ES6, often used to create unique property keys.
+
+**Spread Syntax**: ES6 feature (...) that allows iterables to be expanded in places where multiple elements are expected.
+
+## T - TypeScript, Template Literals, Timeouts, Temporal Dead Zone
+
+**TypeScript**: Superset of JavaScript that adds static type checking and compiles to plain JavaScript.
+
+**Template Literals**: ES6 feature using backticks for string interpolation and multi-line strings.
+
+**Timeouts**: Functions like setTimeout and setInterval for executing code after specified delays.
+
+**Temporal Dead Zone**: Period between entering scope and variable declaration where let/const variables cannot be accessed.
+
+## U - UI (User Interface), URL (Uniform Resource Locator), UTF-8 (Character encoding)
+
+**UI (User Interface)**: The space where interactions between humans and computers occur.
+
+**URL (Uniform Resource Locator)**: Web address that specifies the location of a resource on the internet.
+
+**UTF-8 (Character encoding)**: Variable-width character encoding capable of encoding all valid Unicode characters.
+
+## V - Variables, Var (Variable Declaration), Vanilla JS
+
+**Variables**: Named storage locations for data values in programming.
+
+**Var (Variable Declaration)**: Traditional way to declare variables in JavaScript, function-scoped and hoisted.
+
+**Vanilla JS**: Plain JavaScript without any additional libraries or frameworks.
+
+## W - Webpack (JavaScript module bundler), WebSocket, WeakMap
+
+**Webpack (JavaScript module bundler)**: Tool that bundles JavaScript modules and assets for web applications.
+
+**WebSocket**: Communication protocol providing full-duplex communication channels over a single TCP connection.
+
+**WeakMap**: Collection of key-value pairs where keys must be objects and are held weakly.
+
+## X - XMLHttpRequest, XML (eXtensible Markup Language)
+
+**XMLHttpRequest**: API that provides client functionality for transferring data between a client and server.
+
+**XML (eXtensible Markup Language)**: Markup language that defines rules for encoding documents in a machine-readable format.
+
+## Y - Yield (Generator function), Yarn (Package manager)
+
+**Yield (Generator function)**: Keyword used in generator functions to pause execution and return a value.
+
+**Yarn (Package manager)**: Fast, reliable, and secure dependency management tool for JavaScript projects.
+
+## Z - Zone (Execution context in Angular), Zero-based Indexing
+
+**Zone (Execution context in Angular)**: Execution context that persists across async tasks in Angular applications.
+
+**Zero-based Indexing**: Programming convention where the first element of a sequence is assigned index 0.
+
+This comprehensive guide serves as a quick reference for JavaScript concepts that I use regularly in my development work. Each concept builds upon others to create the rich ecosystem we know as modern JavaScript development.`,
     author: {
       name: "Chandrashekar",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
       bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
     },
     publishedDate: "2024-01-12",
-    readTime: 9,
-    tags: ["React 18", "Concurrent Features", "Performance", "useTransition", "Suspense"],
+    readTime: 15,
+    tags: ["JavaScript", "Programming", "Web Development", "Reference", "ES6"],
     category: "Development",
     featuredImage: blogPost4,
     featured: false
   },
   {
     id: "5",
-    title: "Modern CSS-in-JS: Styled-Components vs Emotion vs Vanilla Extract",
-    slug: "modern-css-in-js-comparison-2024",
-    excerpt: "A comprehensive comparison of modern CSS-in-JS solutions, including performance benchmarks, developer experience, and practical recommendations for React projects.",
-    content: `# Modern CSS-in-JS: Styled-Components vs Emotion vs Vanilla Extract
-
-The CSS-in-JS landscape has evolved dramatically. After using various solutions in production, I want to share insights on choosing the right styling approach for modern React applications.
-
-## The Current State of CSS-in-JS
-
-### Performance Considerations
-
-Runtime CSS-in-JS libraries have performance implications:
-- **Bundle size**: Additional JavaScript overhead
-- **Runtime cost**: Style generation and injection
-- **Server-side rendering**: Hydration mismatches
-
-### Zero-Runtime Solutions
-
-The trend is moving towards compile-time solutions:
-- **Vanilla Extract**: Type-safe CSS with zero runtime
-- **Linaria**: CSS-in-JS without runtime overhead
-- **Compiled**: Facebook's solution for large-scale apps
-
-## Styled-Components: The Pioneer
-
-\`\`\`javascript
-import styled, { css } from 'styled-components';
-
-interface ButtonProps {
-  variant: 'primary' | 'secondary';
-  size: 'small' | 'medium' | 'large';
-}
-
-const Button = styled.button<ButtonProps>\`
-  padding: \${props => {
-    switch (props.size) {
-      case 'small': return '8px 16px';
-      case 'medium': return '12px 24px';
-      case 'large': return '16px 32px';
-    }
-  }};
-  
-  background-color: \${props => 
-    props.variant === 'primary' ? '#007bff' : '#6c757d'
-  };
-  
-  border-radius: 6px;
-  border: none;
-  color: white;
-  font-weight: 500;
-  cursor: pointer;
-  
-  \${props => props.variant === 'primary' && css\`
-    &:hover {
-      background-color: #0056b3;
-    }
-  \`}
-\`;
-
-// Usage
-<Button variant="primary" size="medium">
-  Click me
-</Button>
-\`\`\`
-
-**Pros:**
-- Great developer experience
-- Dynamic styling with props
-- Strong TypeScript support
-- Mature ecosystem
-
-**Cons:**
-- Runtime overhead
-- Bundle size impact
-- SSR complexity
-
-## Emotion: Performance Focused
-
-\`\`\`javascript
-/** @jsxImportSource @emotion/react */
-import { css, styled } from '@emotion/react';
-
-const buttonStyles = css\`
-  padding: 12px 24px;
-  border-radius: 6px;
-  border: none;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-\`;
-
-const primaryButton = css\`
-  background-color: #007bff;
-  color: white;
-  
-  &:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
-  }
-\`;
-
-// Using css prop
-function MyButton({ children, isPrimary }: { 
-  children: React.ReactNode; 
-  isPrimary?: boolean;
-}) {
-  return (
-    <button 
-      css={[buttonStyles, isPrimary && primaryButton]}
-    >
-      {children}
-    </button>
-  );
-}
-
-// Or styled API
-const StyledButton = styled.button\`
-  \${buttonStyles}
-  \${props => props.isPrimary && primaryButton}
-\`;
-\`\`\`
-
-**Pros:**
-- Better performance than styled-components
-- Flexible API (css prop + styled)
-- Smaller bundle size
-- Good SSR support
-
-**Cons:**
-- Still has runtime cost
-- Babel configuration needed
-
-## Vanilla Extract: Zero-Runtime Champion
-
-\`\`\`typescript
-// button.css.ts
-import { style, styleVariants } from '@vanilla-extract/css';
-import { createTheme } from '@vanilla-extract/css';
-
-export const [themeClass, vars] = createTheme({
-  colors: {
-    primary: '#007bff',
-    secondary: '#6c757d',
-    white: '#ffffff'
-  },
-  space: {
-    small: '8px',
-    medium: '12px',
-    large: '16px'
-  }
-});
-
-const baseButton = style({
-  borderRadius: '6px',
-  border: 'none',
-  fontWeight: 500,
-  cursor: 'pointer',
-  transition: 'all 0.2s',
-  ':hover': {
-    transform: 'translateY(-1px)'
-  }
-});
-
-export const buttonVariants = styleVariants({
-  primary: [baseButton, {
-    backgroundColor: vars.colors.primary,
-    color: vars.colors.white,
-    ':hover': {
-      backgroundColor: '#0056b3'
-    }
-  }],
-  secondary: [baseButton, {
-    backgroundColor: vars.colors.secondary,
-    color: vars.colors.white,
-    ':hover': {
-      backgroundColor: '#5a6268'
-    }
-  }]
-});
-
-export const buttonSizes = styleVariants({
-  small: {
-    padding: \`\${vars.space.small} \${vars.space.medium}\`
-  },
-  medium: {
-    padding: \`\${vars.space.medium} \${vars.space.large}\`
-  },
-  large: {
-    padding: \`\${vars.space.large} 32px\`
-  }
-});
-\`\`\`
-
-\`\`\`javascript
-// Button.tsx
-import { buttonVariants, buttonSizes } from './button.css';
-import clsx from 'clsx';
-
-interface ButtonProps {
-  variant: keyof typeof buttonVariants;
-  size: keyof typeof buttonSizes;
-  children: React.ReactNode;
-}
-
-export function Button({ variant, size, children }: ButtonProps) {
-  return (
-    <button 
-      className={clsx(buttonVariants[variant], buttonSizes[size])}
-    >
-      {children}
-    </button>
-  );
-}
-\`\`\`
-
-**Pros:**
-- Zero runtime overhead
-- Type-safe styles
-- Excellent performance
-- Great build-time optimizations
-
-**Cons:**
-- Learning curve
-- Less dynamic styling
-- More setup complexity
-
-## My Recommendations Based on Project Needs
-
-### For New Projects (2024)
-**Vanilla Extract** + **Tailwind CSS** combination:
-- Vanilla Extract for component-specific styles
-- Tailwind for utility classes and rapid development
-
-### For Existing Large Apps
-**Emotion** for gradual migration:
-- Better performance than styled-components
-- Easier migration path
-- Good compatibility
-
-### For Rapid Prototyping
-**Styled-Components**:
-- Fastest development experience
-- Great for component libraries
-- Easy dynamic styling
-
-## Performance Benchmarks (Real App)
-
-From my testing on a production app:
-
-- **Vanilla Extract**: 0ms runtime overhead, 15% smaller bundle
-- **Emotion**: 2-3ms per component render
-- **Styled-Components**: 4-5ms per component render
-
-The choice depends on your priorities: performance vs developer experience vs team expertise.`,
-    author: {
-      name: "Chandrashekar",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-      bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
-    },
-    publishedDate: "2024-01-08",
-    readTime: 8,
-    tags: ["CSS-in-JS", "Styled Components", "Emotion", "Vanilla Extract", "Performance"],
-    category: "Development",
-    featuredImage: blogPost5,
-    featured: false
-  },
-  {
-    id: "aem-react-integration-guide",
     title: "Building Scalable Web Experiences with AEM and React: A Complete Integration Guide",
-    slug: "aem-react-integration-guide",
-    excerpt: "Master the art of combining Adobe Experience Manager with React to create powerful, content-driven web applications. Learn headless CMS patterns, GraphQL integration, and modern deployment strategies.",
-    content: `
-      <div class="prose prose-lg max-w-none">
-        <p class="text-xl font-medium text-muted-foreground mb-8">Adobe Experience Manager (AEM) paired with React represents one of the most powerful combinations for building enterprise-scale web applications. This comprehensive guide explores how to leverage both technologies to create scalable, maintainable, and high-performance digital experiences.</p>
+    slug: "building-scalable-web-aem-react-integration",
+    excerpt: "Learn how to integrate Adobe Experience Manager with React to build powerful, content-driven web applications. From setup to deployment strategies.",
+    content: `# Building Scalable Web Experiences with AEM and React: A Complete Integration Guide
 
-        <h2>Why AEM + React?</h2>
-        <p>The combination of AEM's robust content management capabilities with React's component-based architecture offers several compelling advantages:</p>
-        
-        <ul>
-          <li><strong>Content-First Development:</strong> AEM provides enterprise-grade content management while React handles the presentation layer</li>
-          <li><strong>Developer Experience:</strong> React's modern development tools combined with AEM's authoring experience</li>
-          <li><strong>Performance:</strong> Client-side rendering capabilities with server-side content optimization</li>
-          <li><strong>Scalability:</strong> Microservices architecture supporting both technologies</li>
-        </ul>
+Adobe Experience Manager (AEM) combined with React creates a powerful foundation for building enterprise-scale web applications. After working on several AEM + React projects, I want to share the integration patterns and best practices I've learned.
 
-        <h2>Headless AEM Architecture</h2>
-        <p>Modern AEM implementations leverage headless architecture patterns, where AEM serves as a content repository while React applications consume content via APIs:</p>
+## Why AEM + React?
 
-        <pre><code>// Content Fragment API integration
-import { AEMHeadless } from '@adobe/aem-headless-client-js';
+The combination of AEM's robust content management capabilities with React's component-based architecture offers:
 
-const aemHeadlessClient = new AEMHeadless({
-  serviceURL: process.env.REACT_APP_AEM_HOST,
-  endpoint: process.env.REACT_APP_AEM_ENDPOINT,
-});
+- **Content-Driven Development**: Marketers can manage content without developer intervention
+- **Component Reusability**: React components can be mapped to AEM components
+- **SEO-Friendly**: Server-side rendering with AEM's built-in SEO capabilities
+- **Scalable Architecture**: Both technologies scale well for enterprise needs
 
-export const fetchContentFragments = async (modelPath) => {
-  try {
-    const response = await aemHeadlessClient.runPersistedQuery(
-      \`my-site/article-by-path\`,
-      { path: modelPath }
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch content:', error);
-    throw error;
-  }
-};</code></pre>
+## Setting Up AEM with React
 
-        <h2>GraphQL Integration Patterns</h2>
-        <p>AEM's GraphQL API provides a flexible way to query content fragments. Here's how to set up efficient data fetching:</p>
+### 1. AEM React Editable Components
 
-        <pre><code>// GraphQL query for article content
-const ARTICLE_QUERY = \`
-  query ArticleByPath($path: String!) {
-    articleByPath(path: $path) {
-      item {
-        title
-        description
-        content {
-          html
-        }
-        author {
-          name
-          bio
-        }
-        publishDate
-        featuredImage {
-          _path
-          _authorUrl
-        }
-      }
-    }
-  }
-\`;
+\`\`\`javascript
+import { MapTo, withMappable } from '@adobe/aem-react-editable-components';
 
-// React hook for content fetching
-export const useAEMContent = (path) => {
+const HeroComponent = (props) => {
+  return (
+    <div className="hero-component">
+      <h1>{props.title}</h1>
+      <p>{props.description}</p>
+      <img src={props.imageUrl} alt={props.title} />
+    </div>
+  );
+};
+
+// Map React component to AEM component
+MapTo('mysite/components/hero')(withMappable(HeroComponent));
+\`\`\`
+
+### 2. Content Fragment Integration
+
+\`\`\`javascript
+import { useEffect, useState } from 'react';
+
+function useContentFragment(path) {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        setLoading(true);
-        const result = await aemHeadlessClient.runQuery(ARTICLE_QUERY, { path });
-        setContent(result.data.articleByPath.item);
-      } catch (err) {
-        setError(err);
+        const response = await fetch(\`/content/dam/\${path}.model.json\`);
+        const data = await response.json();
+        setContent(data);
+      } catch (error) {
+        console.error('Failed to fetch content:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    if (path) {
-      fetchContent();
-    }
+    fetchContent();
   }, [path]);
 
-  return { content, loading, error };
-};</code></pre>
+  return { content, loading };
+}
 
-        <h2>Component Mapping and Content Models</h2>
-        <p>Establish a clear mapping between AEM content models and React components:</p>
+// Usage in component
+function BlogPost({ contentPath }) {
+  const { content, loading } = useContentFragment(contentPath);
 
-        <pre><code>// Component mapping configuration
-const componentMapping = {
-  'hero-banner': HeroBanner,
-  'article-text': ArticleText,
-  'image-gallery': ImageGallery,
-  'call-to-action': CallToAction,
-};
+  if (loading) return <div>Loading...</div>;
 
-// Dynamic component renderer
-export const ContentRenderer = ({ contentFragment }) => {
-  const { componentType, ...props } = contentFragment;
-  const Component = componentMapping[componentType];
-  
-  if (!Component) {
-    console.warn(\`Component type "\${componentType}" not found\`);
-    return null;
-  }
-  
-  return <Component {...props} />;
-};</code></pre>
-
-        <h2>Performance Optimization Strategies</h2>
-        <p>Optimize your AEM + React application for maximum performance:</p>
-
-        <h3>1. Content Caching</h3>
-        <pre><code>// React Query integration for caching
-import { useQuery } from '@tanstack/react-query';
-
-export const useAEMArticle = (path) => {
-  return useQuery({
-    queryKey: ['aem-article', path],
-    queryFn: () => fetchContentFragments(path),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 30 * 60 * 1000, // 30 minutes
-  });
-};</code></pre>
-
-        <h3>2. Image Optimization</h3>
-        <pre><code>// Optimized image component
-const AEMImage = ({ imagePath, alt, className }) => {
-  const optimizedSrc = \`\${imagePath}?width=800&format=webp&optimize=medium\`;
-  const fallbackSrc = \`\${imagePath}?width=800&format=jpeg\`;
-  
   return (
-    <picture>
-      <source srcSet={optimizedSrc} type="image/webp" />
-      <img src={fallbackSrc} alt={alt} className={className} loading="lazy" />
-    </picture>
+    <article>
+      <h1>{content.title}</h1>
+      <div dangerouslySetInnerHTML={{ __html: content.body }} />
+    </article>
   );
-};</code></pre>
-
-        <h2>Deployment and CI/CD</h2>
-        <p>Set up automated deployment pipelines for both AEM content and React applications:</p>
-
-        <pre><code># Docker configuration for React app
-FROM node:18-alpine as build
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-RUN npm run build
-
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]</code></pre>
-
-        <h2>Testing Strategies</h2>
-        <p>Implement comprehensive testing for AEM content integration:</p>
-
-        <pre><code>// Mock AEM responses for testing
-import { render, screen, waitFor } from '@testing-library/react';
-import { useAEMContent } from '../hooks/useAEMContent';
-
-jest.mock('../hooks/useAEMContent');
-
-describe('ArticlePage', () => {
-  it('renders article content from AEM', async () => {
-    const mockContent = {
-      title: 'Test Article',
-      content: { html: '<p>Test content</p>' },
-      author: { name: 'Chandrashekar' }
-    };
-    
-    useAEMContent.mockReturnValue({
-      content: mockContent,
-      loading: false,
-      error: null
-    });
-
-    render(<ArticlePage path="/content/articles/test" />);
-    
-    await waitFor(() => {
-      expect(screen.getByText('Test Article')).toBeInTheDocument();
-    });
-  });
-});</code></pre>
-
-        <h2>Security Best Practices</h2>
-        <p>Ensure your AEM + React implementation follows security best practices:</p>
-
-        <ul>
-          <li><strong>API Authentication:</strong> Implement proper authentication for AEM GraphQL endpoints</li>
-          <li><strong>Content Validation:</strong> Sanitize and validate all content from AEM before rendering</li>
-          <li><strong>CORS Configuration:</strong> Properly configure CORS policies for cross-origin requests</li>
-          <li><strong>Content Security Policy:</strong> Implement CSP headers to prevent XSS attacks</li>
-        </ul>
-
-        <h2>Future Considerations</h2>
-        <p>As the web development landscape evolves, consider these emerging patterns:</p>
-
-        <ul>
-          <li><strong>Edge Computing:</strong> Leverage CDN edge functions for improved performance</li>
-          <li><strong>Progressive Web Apps:</strong> Implement PWA features for enhanced user experience</li>
-          <li><strong>Micro-frontends:</strong> Consider micro-frontend architecture for large-scale applications</li>
-          <li><strong>AI Integration:</strong> Explore AI-powered content personalization with AEM</li>
-        </ul>
-
-        <h2>Conclusion</h2>
-        <p>The combination of AEM and React provides a robust foundation for building modern, content-driven web applications. By following the patterns and practices outlined in this guide, you can create scalable, maintainable, and high-performance digital experiences that serve both content creators and end users effectively.</p>
-
-        <p>Remember that successful AEM + React integration requires careful planning of your content architecture, component design, and deployment strategy. Start small, iterate frequently, and always prioritize performance and user experience in your implementation decisions.</p>
-      </div>
-    `,
-    author: {
-      name: "Chandrashekar",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=chandrashekar",
-      bio: "Senior React Developer with 3+ years of experience in modern web development and enterprise CMS integration. Passionate about building scalable, performant web applications."
-    },
-    publishedDate: "2024-08-20",
-    readTime: 15,
-    tags: ["AEM", "React", "Headless CMS", "GraphQL", "Enterprise", "Content Management"],
-    category: "Development",
-    featuredImage: blogHeroImage,
-    featured: true
-  },
-  {
-    id: "7",
-    title: "Persisting React State Across Page Refreshes: localStorage Patterns",
-    slug: "persisting-react-state-page-refresh-localstorage",
-    excerpt: "Learn effective patterns for persisting React state using localStorage, including custom hooks and best practices for maintaining state across browser sessions.",
-    content: `# Persisting React State Across Page Refreshes: localStorage Patterns
-
-One of the most common challenges in React development is maintaining state when users refresh the page. After building several production apps, I've developed reliable patterns for state persistence using localStorage.
-
-## The Problem with Default React State
-
-By default, React state is ephemeral. When users refresh the page, all state is lost:
-
-\`\`\`javascript
-const [cart, setCart] = useState([]); // Lost on refresh!
-\`\`\`
-
-This creates poor user experience, especially for:
-- Shopping carts
-- Form data
-- User preferences
-- Search filters
-- Theme selections
-
-## Basic localStorage Integration
-
-Here's the fundamental pattern I use:
-
-\`\`\`javascript
-const [cart, setCart] = useState(() => {
-  const savedCart = localStorage.getItem('cart');
-  return savedCart ? JSON.parse(savedCart) : [];
-});
-
-useEffect(() => {
-  localStorage.setItem('cart', JSON.stringify(cart));
-}, [cart]);
-\`\`\`
-
-### Key Points:
-- Use lazy initial state to read from localStorage only once
-- Parse JSON when reading, stringify when writing
-- Update localStorage whenever state changes
-
-## Custom usePersistState Hook
-
-For better reusability, I created this custom hook:
-
-\`\`\`typescript
-import { useState, useEffect, useMemo } from 'react';
-
-export function usePersistState<T>(
-  initialValue: T, 
-  storageKey: string
-): [T, (newState: T) => void] {
-  
-  const prefixedKey = \`state:\${storageKey}\`;
-  
-  // Initialize state from localStorage or use default
-  const _initialValue = useMemo(() => {
-    try {
-      const storedValue = localStorage.getItem(prefixedKey);
-      if (storedValue !== null) {
-        return JSON.parse(storedValue);
-      }
-    } catch (error) {
-      console.warn(\`Failed to parse localStorage value for key "\${prefixedKey}"\`, error);
-    }
-    return initialValue;
-  }, [prefixedKey, initialValue]);
-
-  const [state, setState] = useState<T>(_initialValue);
-
-  // Persist state changes to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem(prefixedKey, JSON.stringify(state));
-    } catch (error) {
-      console.warn(\`Failed to save to localStorage for key "\${prefixedKey}"\`, error);
-    }
-  }, [state, prefixedKey]);
-
-  return [state, setState];
 }
 \`\`\`
 
-## Usage Examples
+### 3. GraphQL Integration
 
-### Shopping Cart
 \`\`\`javascript
+import { useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
+
+const GET_ARTICLES = gql\`
+  query GetArticles($limit: Int!) {
+    articleList(limit: $limit) {
+      items {
+        _path
+        title
+        description
+        publishDate
+        author {
+          name
+          bio
+        }
+      }
+    }
+  }
+\`;
+
+function ArticleList() {
+  const { loading, error, data } = useQuery(GET_ARTICLES, {
+    variables: { limit: 10 }
+  });
+
+  if (loading) return <p>Loading articles...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  return (
+    <div className="article-grid">
+      {data.articleList.items.map((article) => (
+        <ArticleCard key={article._path} article={article} />
+      ))}
+    </div>
+  );
+}
+\`\`\`
+
+## Advanced Integration Patterns
+
+### 1. Context-Aware Components
+
+\`\`\`javascript
+import { useContext } from 'react';
+import { ModelManager } from '@adobe/aem-spa-page-model-manager';
+
+const AEMContext = createContext();
+
+function withAEMContext(Component) {
+  return function AEMContextComponent(props) {
+    const [model, setModel] = useState(null);
+
+    useEffect(() => {
+      ModelManager.getData({ path: props.cqPath })
+        .then(setModel)
+        .catch(console.error);
+    }, [props.cqPath]);
+
+    return (
+      <AEMContext.Provider value={{ model, ...props }}>
+        <Component {...props} />
+      </AEMContext.Provider>
+    );
+  };
+}
+\`\`\`
+
+### 2. Multi-Site Management
+
+\`\`\`javascript
+function useSiteConfig() {
+  const [siteConfig, setSiteConfig] = useState(null);
+
+  useEffect(() => {
+    const siteName = window.location.hostname;
+    fetch(\`/etc/acs-commons/site-config/\${siteName}.json\`)
+      .then(response => response.json())
+      .then(setSiteConfig)
+      .catch(console.error);
+  }, []);
+
+  return siteConfig;
+}
+
+function SiteWrapper({ children }) {
+  const siteConfig = useSiteConfig();
+
+  if (!siteConfig) return <div>Loading site configuration...</div>;
+
+  return (
+    <div className={\`site-\${siteConfig.theme}\`}>
+      <header>
+        <img src={siteConfig.logo} alt={siteConfig.siteName} />
+        <nav>{/* Dynamic navigation based on site config */}</nav>
+      </header>
+      <main>{children}</main>
+      <footer>{/* Site-specific footer */}</footer>
+    </div>
+  );
+}
+\`\`\`
+
+## Performance Optimization
+
+### 1. Code Splitting by AEM Components
+
+\`\`\`javascript
+import { lazy, Suspense } from 'react';
+
+const ComponentMap = {
+  'mysite/components/hero': lazy(() => import('./HeroComponent')),
+  'mysite/components/carousel': lazy(() => import('./CarouselComponent')),
+  'mysite/components/form': lazy(() => import('./FormComponent'))
+};
+
+function DynamicComponent({ resourceType, ...props }) {
+  const Component = ComponentMap[resourceType];
+
+  if (!Component) {
+    console.warn(\`Component not found: \${resourceType}\`);
+    return null;
+  }
+
+  return (
+    <Suspense fallback={<div>Loading component...</div>}>
+      <Component {...props} />
+    </Suspense>
+  );
+}
+\`\`\`
+
+### 2. Caching Strategies
+
+\`\`\`javascript
+// Service Worker for content caching
+const CACHE_NAME = 'aem-content-v1';
+const CONTENT_URLS = [
+  '/content/dam/',
+  '/api/graphql',
+  '/_jcr_content'
+];
+
+self.addEventListener('fetch', event => {
+  if (CONTENT_URLS.some(url => event.request.url.includes(url))) {
+    event.respondWith(
+      caches.match(event.request)
+        .then(response => {
+          if (response) {
+            // Serve from cache
+            return response;
+          }
+          // Fetch and cache
+          return fetch(event.request)
+            .then(response => {
+              const responseClone = response.clone();
+              caches.open(CACHE_NAME)
+                .then(cache => cache.put(event.request, responseClone));
+              return response;
+            });
+        })
+    );
+  }
+});
+\`\`\`
+
+## Deployment Best Practices
+
+1. **Environment Configuration**: Use AEM's runmode system to manage different environments
+2. **Build Optimization**: Leverage AEM's client library system for production builds
+3. **CDN Integration**: Configure AEM Dispatcher with CDN for optimal content delivery
+4. **Monitoring**: Implement proper logging and monitoring for both AEM and React layers
+
+## Key Takeaways
+
+- Start with AEM's SPA editor for quick prototyping
+- Use Content Fragments for structured content
+- Implement proper error boundaries for component failures
+- Leverage AEM's caching mechanisms alongside React optimizations
+- Plan your component mapping strategy early in the project
+
+The AEM + React combination provides a robust foundation for enterprise web applications, offering both developer productivity and content author flexibility.`,
+    author: {
+      name: "Chandrashekar",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
+    },
+    publishedDate: "2024-01-10",
+    readTime: 14,
+    tags: ["AEM", "React", "Adobe Experience Manager", "Integration", "Enterprise"],
+    category: "Development",
+    featuredImage: blogPost5,
+    featured: true
+  },
+  {
+    id: "6",
+    title: "Persisting React State Across Page Refreshes: localStorage Patterns",
+    slug: "react-state-persistence-localstorage-patterns",
+    excerpt: "Master state persistence in React applications using localStorage. Learn custom hooks, best practices, and advanced patterns for maintaining state across sessions.",
+    content: `# Persisting React State Across Page Refreshes: localStorage Patterns
+
+One of the most common challenges in React development is maintaining state across page refreshes. In this comprehensive guide, I'll share the patterns and custom hooks I use to create seamless user experiences with persistent state.
+
+## The Problem with Default React State
+
+By default, React state is ephemeral - it disappears when users refresh the page or navigate away. This can be frustrating for users who lose their form data, shopping cart contents, or application preferences.
+
+## Basic localStorage Integration
+
+### Simple State Persistence
+
+\`\`\`javascript
+import { useState, useEffect } from 'react';
+
 function ShoppingCart() {
-  const [cart, setCart] = usePersistState([], 'shopping-cart');
-  
+  const [cart, setCart] = useState(() => {
+    // Initialize state from localStorage
+    const savedCart = localStorage.getItem('cart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  // Update localStorage whenever cart changes
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
+
   const addToCart = (product) => {
     setCart(prevCart => [...prevCart, product]);
   };
@@ -1237,9 +951,13 @@ function ShoppingCart() {
   };
 
   return (
-    <div>
+    <div className="shopping-cart">
       {cart.map(item => (
-        <CartItem key={item.id} item={item} onRemove={removeFromCart} />
+        <CartItem 
+          key={item.id} 
+          item={item} 
+          onRemove={() => removeFromCart(item.id)} 
+        />
       ))}
       <button onClick={() => addToCart(newProduct)}>
         Add Product
@@ -1249,214 +967,152 @@ function ShoppingCart() {
 }
 \`\`\`
 
-### User Preferences
-\`\`\`javascript
-function UserSettings() {
-  const [preferences, setPreferences] = usePersistState({
-    theme: 'light',
-    language: 'en',
-    notifications: true
-  }, 'user-preferences');
+## Custom Hook for State Persistence
 
-  const updateTheme = (theme) => {
-    setPreferences(prev => ({ ...prev, theme }));
-  };
+### usePersistState Hook
+
+\`\`\`typescript
+import { useState, useEffect, useMemo } from 'react';
+
+export function usePersistState<T>(
+  initialValue: T, 
+  key: string
+): [T, (newState: T | ((prev: T) => T)) => void] {
+  
+  // Initialize state from localStorage
+  const _initialValue = useMemo(() => {
+    try {
+      const localStorageValue = localStorage.getItem(\`state:\${key}\`);
+      if (localStorageValue) {
+        return JSON.parse(localStorageValue);
+      }
+    } catch (error) {
+      console.warn(\`Failed to parse localStorage item '\${key}'\`, error);
+    }
+    return initialValue;
+  }, [initialValue, key]);
+
+  const [state, setState] = useState<T>(_initialValue);
+
+  // Update localStorage when state changes
+  useEffect(() => {
+    try {
+      const stateString = JSON.stringify(state);
+      localStorage.setItem(\`state:\${key}\`, stateString);
+    } catch (error) {
+      console.warn(\`Failed to save state to localStorage '\${key}'\`, error);
+    }
+  }, [state, key]);
+
+  return [state, setState];
+}
+\`\`\`
+
+### Usage Examples
+
+\`\`\`javascript
+// Counter with persistence
+function PersistentCounter() {
+  const [counter, setCounter] = usePersistState(0, 'counter');
 
   return (
     <div>
-      <ThemeSelector 
-        value={preferences.theme} 
-        onChange={updateTheme} 
-      />
+      <p>Count: {counter}</p>
+      <button onClick={() => setCounter(counter + 1)}>
+        Increment
+      </button>
+      <button onClick={() => setCounter(0)}>
+        Reset
+      </button>
     </div>
+  );
+}
+
+// Form with auto-save
+function ContactForm() {
+  const [formData, setFormData] = usePersistState({
+    name: '',
+    email: '',
+    message: ''
+  }, 'contact-form');
+
+  const updateField = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await submitForm(formData);
+      // Clear form after successful submission
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      console.error('Submission failed:', error);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        value={formData.name}
+        onChange={(e) => updateField('name', e.target.value)}
+        placeholder="Your name"
+      />
+      <input
+        type="email"
+        value={formData.email}
+        onChange={(e) => updateField('email', e.target.value)}
+        placeholder="Your email"
+      />
+      <textarea
+        value={formData.message}
+        onChange={(e) => updateField('message', e.target.value)}
+        placeholder="Your message"
+      />
+      <button type="submit">Send Message</button>
+    </form>
   );
 }
 \`\`\`
 
-This pattern has dramatically improved user experience in my applications by maintaining context across browser sessions while keeping the implementation clean and reusable.`,
-    author: {
-      name: "Chandrashekar",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-      bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
-    },
-    publishedDate: "2024-01-12",
-    readTime: 8,
-    tags: ["React", "localStorage", "State Management", "Hooks", "Persistence"],
-    category: "Development",
-    featuredImage: blogPost4,
-    featured: false
-  },
-  {
-    id: "8",
-    title: "Essential Git Commands Cheat Sheet for Developers",
-    slug: "essential-git-commands-cheat-sheet-developers",
-    excerpt: "A comprehensive guide to Git commands every developer needs to know, from basic operations to advanced workflows for effective version control.",
-    content: `# Essential Git Commands Cheat Sheet for Developers
+## Advanced Patterns
 
-Git is the backbone of modern software development. After 3 years of React development, I've compiled the essential Git commands that every developer should master. This is my go-to reference guide.
-
-## Getting Started with Git
-
-### Repository Initialization
-\`\`\`bash
-git init                     # Initialize a new Git repository
-git clone [url]             # Clone a repository into a new directory
-git remote -v               # List remote repositories with URLs
-git remote add [name] [url] # Add a new remote repository
-git remote remove [name]    # Remove a remote repository
-\`\`\`
-
-## Daily Git Workflow Commands
-
-### Basic Operations
-\`\`\`bash
-git status                  # Display working directory and staging area status
-git add [file]             # Add a file to the staging area
-git add .                  # Add all changes to staging area
-git commit -m "[message]"  # Record changes with a descriptive message
-git push                   # Upload local repository content to remote
-git pull                   # Fetch and merge changes from remote repository
-\`\`\`
-
-### Configuration
-\`\`\`bash
-git config --global user.name "[name]"        # Set your name
-git config --global user.email "[email]"      # Set your email
-git config --list                             # Show all configuration settings
-\`\`\`
-
-## Branch Management
-
-### Creating and Switching Branches
-\`\`\`bash
-git branch                    # List all local branches
-git branch [branch-name]      # Create a new branch
-git checkout [branch]         # Switch to specified branch
-git checkout -b [branch]      # Create new branch and switch to it
-git branch -d [branch]        # Delete specified branch safely
-git branch -D [branch]        # Force delete specified branch
-\`\`\`
-
-### Merging and Integration
-\`\`\`bash
-git merge [branch]           # Merge specified branch into current branch
-git merge --abort            # Abort current merge process
-git rebase [branch]          # Reapply commits on top of another branch
-git cherry-pick [commit]     # Apply a specific commit to current branch
-\`\`\`
-
-## Advanced Git Operations
-
-### Stashing Changes
-\`\`\`bash
-git stash                    # Temporarily save uncommitted changes
-git stash pop                # Apply most recent stash and remove it
-git stash list               # Show all stashed changes
-git stash drop               # Delete a specific stash
-git stash clear              # Delete all stashes
-\`\`\`
-
-### History and Information
-\`\`\`bash
-git log                      # Display commit history
-git log --oneline            # Compact commit history
-git log --graph              # Show branch structure
-git diff                     # Show changes between commits/files
-git show [commit]            # Display information about a commit
-\`\`\`
-
-These commands form the foundation of effective version control. Master them, and your development workflow will become significantly more efficient and reliable.`,
-    author: {
-      name: "Chandrashekar",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-      bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
-    },
-    publishedDate: "2024-01-10",
-    readTime: 12,
-    tags: ["Git", "Version Control", "Developer Tools", "Workflow", "Commands"],
-    category: "Tools",
-    featuredImage: blogPost5,
-    featured: false
-  },
-  {
-    id: "9",
-    title: "Advanced React State Patterns: Custom Hooks for Better Code",
-    slug: "advanced-react-state-patterns-custom-hooks",
-    excerpt: "Explore advanced state management patterns in React using custom hooks, including state persistence, complex state logic, and performance optimizations.",
-    content: `# Advanced React State Patterns: Custom Hooks for Better Code
-
-After working with React for 3 years, I've discovered that custom hooks are the secret to writing clean, reusable, and maintainable code. Let me share the advanced patterns I use in production applications.
-
-## Why Custom Hooks Matter
-
-Custom hooks allow us to:
-- Extract component logic into reusable functions
-- Share stateful logic between components
-- Separate concerns and improve testability
-- Create domain-specific abstractions
-
-## Advanced usePersistState Hook
-
-Building on localStorage concepts, here's my production-ready persistent state hook:
+### usePersistedReducer Hook
 
 \`\`\`typescript
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useReducer, useEffect } from 'react';
 
-interface UsePersistStateOptions {
-  serialize?: (value: any) => string;
-  deserialize?: (value: string) => any;
-  onError?: (error: Error, key: string) => void;
-}
-
-export function usePersistState<T>(
-  key: string,
-  defaultValue: T,
-  options: UsePersistStateOptions = {}
-): [T, (value: T | ((prev: T) => T)) => void] {
-  const {
-    serialize = JSON.stringify,
-    deserialize = JSON.parse,
-    onError = console.error
-  } = options;
-
-  const [state, setState] = useState<T>(() => {
+function usePersistedReducer<T, A>(
+  reducer: (state: T, action: A) => T,
+  initialState: T,
+  key: string
+): [T, React.Dispatch<A>] {
+  
+  // Get initial state from localStorage
+  const getInitialState = (): T => {
     try {
-      const item = localStorage.getItem(key);
-      return item ? deserialize(item) : defaultValue;
-    } catch (error) {
-      onError(error as Error, key);
-      return defaultValue;
+      const savedState = localStorage.getItem(\`reducer:\${key}\`);
+      return savedState ? JSON.parse(savedState) : initialState;
+    } catch {
+      return initialState;
     }
-  });
+  };
 
-  const isFirstRender = useRef(true);
+  const [state, dispatch] = useReducer(reducer, getInitialState());
 
+  // Save state to localStorage whenever it changes
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
     try {
-      localStorage.setItem(key, serialize(state));
+      localStorage.setItem(\`reducer:\${key}\`, JSON.stringify(state));
     } catch (error) {
-      onError(error as Error, key);
+      console.warn('Failed to save reducer state:', error);
     }
-  }, [key, state, serialize, onError]);
+  }, [state, key]);
 
-  const setValue = useCallback((value: T | ((prev: T) => T)) => {
-    setState(value);
-  }, []);
-
-  return [state, setValue];
+  return [state, dispatch];
 }
-\`\`\`
 
-## Shopping Cart Hook Example
-
-Real-world example combining multiple patterns:
-
-\`\`\`typescript
+// Example usage with shopping cart
 interface CartItem {
   id: string;
   name: string;
@@ -1464,87 +1120,1301 @@ interface CartItem {
   quantity: number;
 }
 
-export function useShoppingCart() {
-  const [items, setItems] = usePersistState<CartItem[]>('shopping-cart', []);
+interface CartState {
+  items: CartItem[];
+  total: number;
+}
 
-  const addItem = useCallback((product: Omit<CartItem, 'quantity'>) => {
-    setItems(currentItems => {
-      const existingItem = currentItems.find(item => item.id === product.id);
-      
+type CartAction = 
+  | { type: 'ADD_ITEM'; payload: CartItem }
+  | { type: 'REMOVE_ITEM'; payload: string }
+  | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
+  | { type: 'CLEAR_CART' };
+
+function cartReducer(state: CartState, action: CartAction): CartState {
+  switch (action.type) {
+    case 'ADD_ITEM':
+      const existingItem = state.items.find(item => item.id === action.payload.id);
       if (existingItem) {
-        return currentItems.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+        return {
+          ...state,
+          items: state.items.map(item =>
+            item.id === action.payload.id
+              ? { ...item, quantity: item.quantity + action.payload.quantity }
+              : item
+          )
+        };
       }
-      
-      return [...currentItems, { ...product, quantity: 1 }];
-    });
-  }, [setItems]);
+      return {
+        ...state,
+        items: [...state.items, action.payload]
+      };
+    
+    case 'REMOVE_ITEM':
+      return {
+        ...state,
+        items: state.items.filter(item => item.id !== action.payload)
+      };
+    
+    case 'CLEAR_CART':
+      return { items: [], total: 0 };
+    
+    default:
+      return state;
+  }
+}
 
-  const removeItem = useCallback((productId: string) => {
-    setItems(currentItems => 
-      currentItems.filter(item => item.id !== productId)
-    );
-  }, [setItems]);
-
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeItem(productId);
-      return;
-    }
-
-    setItems(currentItems =>
-      currentItems.map(item =>
-        item.id === productId ? { ...item, quantity } : item
-      )
-    );
-  }, [setItems, removeItem]);
-
-  const clearCart = useCallback(() => {
-    setItems([]);
-  }, [setItems]);
-
-  const totalPrice = useMemo(() =>
-    items.reduce((total, item) => total + (item.price * item.quantity), 0),
-    [items]
+function ShoppingCartWithReducer() {
+  const [cartState, dispatch] = usePersistedReducer(
+    cartReducer,
+    { items: [], total: 0 },
+    'shopping-cart'
   );
 
-  return {
-    items,
-    addItem,
-    removeItem,
-    updateQuantity,
-    clearCart,
-    totalPrice,
-    isEmpty: items.length === 0
+  const addItem = (item: CartItem) => {
+    dispatch({ type: 'ADD_ITEM', payload: item });
   };
+
+  const removeItem = (id: string) => {
+    dispatch({ type: 'REMOVE_ITEM', payload: id });
+  };
+
+  return (
+    <div>
+      {cartState.items.map(item => (
+        <div key={item.id}>
+          {item.name} - ${item.price} x {item.quantity}
+          <button onClick={() => removeItem(item.id)}>Remove</button>
+        </div>
+      ))}
+    </div>
+  );
 }
 \`\`\`
 
-These patterns have transformed how I build React applications, making code more maintainable, testable, and reusable across projects.`,
+### Storage Strategy with Expiration
+
+\`\`\`typescript
+interface StorageItem<T> {
+  value: T;
+  timestamp: number;
+  expiry?: number; // Time in milliseconds
+}
+
+export function usePersistedStateWithExpiry<T>(
+  initialValue: T,
+  key: string,
+  expiryTime?: number // in milliseconds
+): [T, (value: T) => void] {
+  
+  const getStoredValue = (): T => {
+    try {
+      const storedItem = localStorage.getItem(\`expiry:\${key}\`);
+      if (!storedItem) return initialValue;
+
+      const parsed: StorageItem<T> = JSON.parse(storedItem);
+      
+      // Check if item has expired
+      if (parsed.expiry && Date.now() > parsed.expiry) {
+        localStorage.removeItem(\`expiry:\${key}\`);
+        return initialValue;
+      }
+
+      return parsed.value;
+    } catch {
+      return initialValue;
+    }
+  };
+
+  const [state, setState] = useState<T>(getStoredValue);
+
+  const setStoredValue = (value: T) => {
+    setState(value);
+    
+    try {
+      const storageItem: StorageItem<T> = {
+        value,
+        timestamp: Date.now(),
+        expiry: expiryTime ? Date.now() + expiryTime : undefined
+      };
+      
+      localStorage.setItem(\`expiry:\${key}\`, JSON.stringify(storageItem));
+    } catch (error) {
+      console.warn('Failed to save to localStorage:', error);
+    }
+  };
+
+  return [state, setStoredValue];
+}
+
+// Usage: State that expires after 1 hour
+function TemporaryPreferences() {
+  const [theme, setTheme] = usePersistedStateWithExpiry(
+    'light',
+    'user-theme',
+    60 * 60 * 1000 // 1 hour
+  );
+
+  return (
+    <div>
+      <p>Current theme: {theme}</p>
+      <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+        Toggle Theme
+      </button>
+    </div>
+  );
+}
+\`\`\`
+
+## Best Practices and Considerations
+
+### 1. Error Handling
+Always wrap localStorage operations in try-catch blocks, as they can fail in private browsing mode or when storage is full.
+
+### 2. Performance Optimization
+For frequently changing state, consider debouncing localStorage updates:
+
+\`\`\`javascript
+import { useCallback } from 'react';
+import { debounce } from 'lodash';
+
+function useDebouncePersistedState<T>(initialValue: T, key: string, delay = 500) {
+  const [state, setState] = useState<T>(initialValue);
+
+  const debouncedSave = useCallback(
+    debounce((value: T) => {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch (error) {
+        console.warn('Failed to save to localStorage:', error);
+      }
+    }, delay),
+    [key, delay]
+  );
+
+  const setPersistedState = (value: T) => {
+    setState(value);
+    debouncedSave(value);
+  };
+
+  return [state, setPersistedState] as const;
+}
+\`\`\`
+
+### 3. Data Migration
+Handle schema changes gracefully:
+
+\`\`\`javascript
+function migrateUserData(data: any, version: number): UserData {
+  if (version < 2) {
+    // Migration logic for version 1 to 2
+    return {
+      ...data,
+      preferences: data.settings || {}, // Rename 'settings' to 'preferences'
+      version: 2
+    };
+  }
+  return data;
+}
+\`\`\`
+
+These patterns ensure robust state persistence while maintaining good user experience and handling edge cases gracefully.`,
     author: {
       name: "Chandrashekar",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
       bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
     },
     publishedDate: "2024-01-08",
-    readTime: 15,
-    tags: ["React", "Custom Hooks", "State Management", "TypeScript", "Patterns"],
+    readTime: 13,
+    tags: ["React", "localStorage", "State Management", "Hooks", "Persistence"],
+    category: "Development",
+    featuredImage: blogPost1,
+    featured: false
+  },
+  {
+    id: "7",
+    title: "Essential Git Commands Cheat Sheet for Developers",
+    slug: "essential-git-commands-cheat-sheet-developers",
+    excerpt: "A comprehensive reference guide to Git commands every developer needs to know. From basic workflows to advanced techniques for professional development.",
+    content: `# Essential Git Commands Cheat Sheet for Developers
+
+Git is an essential tool for modern software development. After years of using Git in various projects, I've compiled this comprehensive cheat sheet of commands that every developer should master.
+
+## Repository Management
+
+### Initializing and Cloning
+
+\`\`\`bash
+# Initialize a new Git repository
+git init
+
+# Clone a repository into a new directory
+git clone [url]
+
+# Clone a specific branch
+git clone -b [branch-name] [url]
+
+# Clone with a different directory name
+git clone [url] [directory-name]
+\`\`\`
+
+### Basic Configuration
+
+\`\`\`bash
+# Set global username and email
+git config --global user.name "[name]"
+git config --global user.email "[email]"
+
+# Set local username and email for current repo
+git config user.name "[name]"
+git config user.email "[email]"
+
+# View configuration
+git config --list
+git config user.name
+git config user.email
+\`\`\`
+
+## Daily Workflow Commands
+
+### Staging and Committing
+
+\`\`\`bash
+# Add a file or changes to staging area
+git add [file]
+
+# Add all changes to staging area
+git add .
+git add -A
+
+# Add all tracked files (excludes new files)
+git add -u
+
+# Commit staged changes with a message
+git commit -m "[descriptive message]"
+
+# Commit all tracked changes (skip staging)
+git commit -am "[message]"
+
+# Amend the last commit
+git commit --amend
+git commit --amend -m "[new message]"
+\`\`\`
+
+### Checking Status and History
+
+\`\`\`bash
+# Display the status of the working directory
+git status
+
+# Show short status
+git status -s
+
+# Display commit logs
+git log
+
+# Show compact log with one line per commit
+git log --oneline
+
+# Show log with graph visualization
+git log --graph --oneline --all
+
+# Show specific number of commits
+git log -n 5
+\`\`\`
+
+## Branch Management
+
+### Creating and Switching Branches
+
+\`\`\`bash
+# List all local branches
+git branch
+
+# List all branches (local and remote)
+git branch -a
+
+# Create a new branch
+git branch [branch-name]
+
+# Create and switch to a new branch
+git checkout -b [branch-name]
+
+# Switch to an existing branch
+git checkout [branch-name]
+
+# Switch to the previous branch
+git checkout -
+
+# Delete a local branch
+git branch -d [branch-name]
+
+# Force delete a local branch
+git branch -D [branch-name]
+\`\`\`
+
+### Modern Branch Commands (Git 2.23+)
+
+\`\`\`bash
+# Switch to an existing branch
+git switch [branch-name]
+
+# Create and switch to a new branch
+git switch -c [branch-name]
+
+# Switch to the previous branch
+git switch -
+\`\`\`
+
+## Remote Repository Operations
+
+### Working with Remotes
+
+\`\`\`bash
+# List remote repositories
+git remote -v
+
+# Add a new remote repository
+git remote add [name] [url]
+
+# Remove a remote repository
+git remote remove [name]
+
+# Rename a remote
+git remote rename [old-name] [new-name]
+
+# Change remote URL
+git remote set-url [name] [new-url]
+\`\`\`
+
+### Synchronizing with Remote
+
+\`\`\`bash
+# Upload local repository content to remote
+git push
+
+# Push to specific remote and branch
+git push [remote] [branch]
+
+# Push and set upstream branch
+git push -u [remote] [branch]
+
+# Push all tags
+git push --tags
+
+# Fetch changes from remote (doesn't merge)
+git fetch [remote]
+
+# Fetch and prune deleted remote branches
+git fetch --prune
+
+# Pull changes from remote and merge
+git pull
+
+# Pull with rebase instead of merge
+git pull --rebase
+\`\`\`
+
+## Merging and Rebasing
+
+### Merging Branches
+
+\`\`\`bash
+# Merge a branch into the current branch
+git merge [branch]
+
+# Merge without fast-forward
+git merge --no-ff [branch]
+
+# Abort a merge in progress
+git merge --abort
+
+# Continue merge after resolving conflicts
+git merge --continue
+\`\`\`
+
+### Rebasing
+
+\`\`\`bash
+# Rebase current branch onto another branch
+git rebase [branch]
+
+# Interactive rebase for last n commits
+git rebase -i HEAD~[n]
+
+# Continue rebase after resolving conflicts
+git rebase --continue
+
+# Abort rebase and return to original state
+git rebase --abort
+
+# Skip current commit during rebase
+git rebase --skip
+\`\`\`
+
+## Undoing Changes
+
+### Working Directory and Staging
+
+\`\`\`bash
+# Discard changes in working directory
+git checkout -- [file]
+git restore [file]  # Git 2.23+
+
+# Unstage a file (keep changes in working directory)
+git reset [file]
+git restore --staged [file]  # Git 2.23+
+
+# Discard all changes in working directory
+git checkout .
+git restore .
+\`\`\`
+
+### Commit History
+
+\`\`\`bash
+# Reset to a specific commit (soft reset)
+git reset --soft [commit-hash]
+
+# Reset to a specific commit (mixed reset - default)
+git reset [commit-hash]
+
+# Reset to a specific commit (hard reset - destructive)
+git reset --hard [commit-hash]
+
+# Reset to remote branch state
+git reset --hard origin/[branch-name]
+
+# Create a new commit that undoes changes
+git revert [commit-hash]
+
+# Revert a merge commit
+git revert -m 1 [merge-commit-hash]
+\`\`\`
+
+## Advanced Commands
+
+### Stashing Changes
+
+\`\`\`bash
+# Temporarily save changes without committing
+git stash
+
+# Stash with a message
+git stash save "[message]"
+
+# List all stashes
+git stash list
+
+# Apply the most recent stash
+git stash apply
+
+# Apply a specific stash
+git stash apply stash@{n}
+
+# Apply and remove the most recent stash
+git stash pop
+
+# Drop a specific stash
+git stash drop stash@{n}
+
+# Clear all stashes
+git stash clear
+\`\`\`
+
+### Cherry-picking
+
+\`\`\`bash
+# Apply a commit from another branch
+git cherry-pick [commit-hash]
+
+# Cherry-pick multiple commits
+git cherry-pick [commit1] [commit2]
+
+# Cherry-pick a range of commits
+git cherry-pick [start-commit]..[end-commit]
+
+# Cherry-pick without committing
+git cherry-pick --no-commit [commit-hash]
+\`\`\`
+
+### Tagging
+
+\`\`\`bash
+# Create a lightweight tag
+git tag [tag-name]
+
+# Create an annotated tag
+git tag -a [tag-name] -m "[message]"
+
+# List all tags
+git tag
+
+# Delete a tag
+git tag -d [tag-name]
+
+# Push tags to remote
+git push --tags
+
+# Push a specific tag
+git push origin [tag-name]
+\`\`\`
+
+## Inspection and Comparison
+
+### Viewing Differences
+
+\`\`\`bash
+# Show changes between working directory and staging
+git diff
+
+# Show changes between staging and last commit
+git diff --staged
+git diff --cached
+
+# Show changes between two commits
+git diff [commit1] [commit2]
+
+# Show changes for a specific file
+git diff [file]
+
+# Show changes between branches
+git diff [branch1]..[branch2]
+\`\`\`
+
+### File History
+
+\`\`\`bash
+# Show commit history for a file
+git log [file]
+
+# Show changes for each commit of a file
+git log -p [file]
+
+# Show who last modified each line of a file
+git blame [file]
+
+# Show file content at a specific commit
+git show [commit-hash]:[file-path]
+\`\`\`
+
+## Cleaning Up
+
+### Removing Files
+
+\`\`\`bash
+# Remove file from working directory and staging
+git rm [file]
+
+# Remove file from staging only (keep in working directory)
+git rm --cached [file]
+
+# Remove untracked files
+git clean -f
+
+# Remove untracked files and directories
+git clean -fd
+
+# Preview what will be removed
+git clean -n
+\`\`\`
+
+### Repository Maintenance
+
+\`\`\`bash
+# Remove remote tracking branches that no longer exist
+git remote prune origin
+
+# Garbage collection and optimization
+git gc
+
+# Verify repository integrity
+git fsck
+
+# Show repository statistics
+git count-objects -v
+\`\`\`
+
+## Useful Aliases
+
+Add these to your Git configuration for faster workflows:
+
+\`\`\`bash
+# Set up useful aliases
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.unstage 'reset HEAD --'
+git config --global alias.last 'log -1 HEAD'
+git config --global alias.visual '!gitk'
+git config --global alias.lg "log --oneline --graph --all"
+\`\`\`
+
+## Pro Tips
+
+1. **Use .gitignore**: Always create a comprehensive .gitignore file for your project
+2. **Atomic commits**: Make small, focused commits with clear messages
+3. **Branch naming**: Use descriptive branch names like \`feature/user-authentication\`
+4. **Commit messages**: Follow conventional commit format for better history
+5. **Regular pulls**: Pull frequently to avoid large merge conflicts
+6. **Backup branches**: Create backup branches before risky operations
+
+## Emergency Commands
+
+When things go wrong:
+
+\`\`\`bash
+# Undo last commit but keep changes
+git reset --soft HEAD~1
+
+# Completely undo last commit
+git reset --hard HEAD~1
+
+# Recover deleted commits (shows reflog)
+git reflog
+
+# Reset to a state from reflog
+git reset --hard HEAD@{n}
+
+# Create a branch from a lost commit
+git branch [branch-name] [commit-hash]
+\`\`\`
+
+This cheat sheet covers the essential Git commands I use daily. Master these commands, and you'll be well-equipped to handle any Git workflow efficiently.`,
+    author: {
+      name: "Chandrashekar",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
+    },
+    publishedDate: "2024-01-06",
+    readTime: 16,
+    tags: ["Git", "Version Control", "Development", "Command Line", "Workflow"],
+    category: "Development",
+    featuredImage: blogPost2,
+    featured: false
+  },
+  {
+    id: "8",
+    title: "Advanced React State Patterns: Custom Hooks for Better Code",
+    slug: "advanced-react-state-patterns-custom-hooks",
+    excerpt: "Explore advanced React state management patterns using custom hooks. Learn to build reusable, maintainable state logic for complex applications.",
+    content: `# Advanced React State Patterns: Custom Hooks for Better Code
+
+Custom hooks are one of React's most powerful features for creating reusable state logic. After building numerous React applications, I've developed a collection of advanced patterns that have significantly improved my code quality and development efficiency.
+
+## The Power of Custom Hooks
+
+Custom hooks allow us to:
+- Extract component logic into reusable functions
+- Share stateful logic between components
+- Separate concerns and improve testability
+- Create more readable and maintainable code
+
+## Essential Custom Hook Patterns
+
+### 1. useToggle - Simple Boolean State Management
+
+\`\`\`typescript
+import { useState, useCallback } from 'react';
+
+interface UseToggleReturn {
+  value: boolean;
+  toggle: () => void;
+  setTrue: () => void;
+  setFalse: () => void;
+  setValue: (value: boolean) => void;
+}
+
+export function useToggle(initialValue = false): UseToggleReturn {
+  const [value, setValue] = useState<boolean>(initialValue);
+
+  const toggle = useCallback(() => setValue(prev => !prev), []);
+  const setTrue = useCallback(() => setValue(true), []);
+  const setFalse = useCallback(() => setValue(false), []);
+
+  return {
+    value,
+    toggle,
+    setTrue,
+    setFalse,
+    setValue
+  };
+}
+
+// Usage
+function Modal() {
+  const modal = useToggle(false);
+
+  return (
+    <div>
+      <button onClick={modal.setTrue}>Open Modal</button>
+      {modal.value && (
+        <div className="modal">
+          <h2>Modal Content</h2>
+          <button onClick={modal.setFalse}>Close</button>
+        </div>
+      )}
+    </div>
+  );
+}
+\`\`\`
+
+### 2. useCounter - Enhanced Counter Logic
+
+\`\`\`typescript
+interface UseCounterOptions {
+  min?: number;
+  max?: number;
+  step?: number;
+}
+
+interface UseCounterReturn {
+  count: number;
+  increment: () => void;
+  decrement: () => void;
+  reset: () => void;
+  set: (value: number) => void;
+}
+
+export function useCounter(
+  initialValue = 0,
+  options: UseCounterOptions = {}
+): UseCounterReturn {
+  const { min = -Infinity, max = Infinity, step = 1 } = options;
+  const [count, setCount] = useState(
+    Math.max(min, Math.min(max, initialValue))
+  );
+
+  const increment = useCallback(() => {
+    setCount(prev => Math.min(max, prev + step));
+  }, [max, step]);
+
+  const decrement = useCallback(() => {
+    setCount(prev => Math.max(min, prev - step));
+  }, [min, step]);
+
+  const reset = useCallback(() => {
+    setCount(initialValue);
+  }, [initialValue]);
+
+  const set = useCallback((value: number) => {
+    setCount(Math.max(min, Math.min(max, value)));
+  }, [min, max]);
+
+  return { count, increment, decrement, reset, set };
+}
+
+// Usage
+function QuantitySelector() {
+  const quantity = useCounter(1, { min: 1, max: 10 });
+
+  return (
+    <div className="quantity-selector">
+      <button onClick={quantity.decrement}>-</button>
+      <span>{quantity.count}</span>
+      <button onClick={quantity.increment}>+</button>
+      <button onClick={quantity.reset}>Reset</button>
+    </div>
+  );
+}
+\`\`\`
+
+### 3. useArray - Advanced Array State Management
+
+\`\`\`typescript
+interface UseArrayReturn<T> {
+  items: T[];
+  add: (item: T) => void;
+  remove: (index: number) => void;
+  removeById: (id: string | number) => void;
+  update: (index: number, item: T) => void;
+  updateById: (id: string | number, item: Partial<T>) => void;
+  clear: () => void;
+  filter: (predicate: (item: T) => boolean) => void;
+  sort: (compareFn?: (a: T, b: T) => number) => void;
+  move: (fromIndex: number, toIndex: number) => void;
+}
+
+export function useArray<T extends { id?: string | number }>(
+  initialArray: T[] = []
+): UseArrayReturn<T> {
+  const [items, setItems] = useState<T[]>(initialArray);
+
+  const add = useCallback((item: T) => {
+    setItems(prev => [...prev, item]);
+  }, []);
+
+  const remove = useCallback((index: number) => {
+    setItems(prev => prev.filter((_, i) => i !== index));
+  }, []);
+
+  const removeById = useCallback((id: string | number) => {
+    setItems(prev => prev.filter(item => item.id !== id));
+  }, []);
+
+  const update = useCallback((index: number, newItem: T) => {
+    setItems(prev => prev.map((item, i) => i === index ? newItem : item));
+  }, []);
+
+  const updateById = useCallback((id: string | number, updates: Partial<T>) => {
+    setItems(prev => prev.map(item => 
+      item.id === id ? { ...item, ...updates } : item
+    ));
+  }, []);
+
+  const clear = useCallback(() => {
+    setItems([]);
+  }, []);
+
+  const filter = useCallback((predicate: (item: T) => boolean) => {
+    setItems(prev => prev.filter(predicate));
+  }, []);
+
+  const sort = useCallback((compareFn?: (a: T, b: T) => number) => {
+    setItems(prev => [...prev].sort(compareFn));
+  }, []);
+
+  const move = useCallback((fromIndex: number, toIndex: number) => {
+    setItems(prev => {
+      const newItems = [...prev];
+      const [movedItem] = newItems.splice(fromIndex, 1);
+      newItems.splice(toIndex, 0, movedItem);
+      return newItems;
+    });
+  }, []);
+
+  return {
+    items,
+    add,
+    remove,
+    removeById,
+    update,
+    updateById,
+    clear,
+    filter,
+    sort,
+    move
+  };
+}
+
+// Usage
+function TodoList() {
+  const todos = useArray([
+    { id: 1, text: 'Learn React', completed: false },
+    { id: 2, text: 'Build an app', completed: false }
+  ]);
+
+  const addTodo = () => {
+    const newTodo = {
+      id: Date.now(),
+      text: 'New todo',
+      completed: false
+    };
+    todos.add(newTodo);
+  };
+
+  const toggleTodo = (id: number) => {
+    const todo = todos.items.find(t => t.id === id);
+    if (todo) {
+      todos.updateById(id, { completed: !todo.completed });
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={addTodo}>Add Todo</button>
+      {todos.items.map((todo, index) => (
+        <div key={todo.id}>
+          <input
+            type="checkbox"
+            checked={todo.completed}
+            onChange={() => toggleTodo(todo.id)}
+          />
+          <span>{todo.text}</span>
+          <button onClick={() => todos.remove(index)}>Delete</button>
+        </div>
+      ))}
+    </div>
+  );
+}
+\`\`\`
+
+### 4. useAsync - Async State Management
+
+\`\`\`typescript
+interface UseAsyncState<T> {
+  data: T | null;
+  loading: boolean;
+  error: Error | null;
+}
+
+interface UseAsyncReturn<T> extends UseAsyncState<T> {
+  execute: (...args: any[]) => Promise<T>;
+  reset: () => void;
+}
+
+export function useAsync<T>(
+  asyncFunction: (...args: any[]) => Promise<T>,
+  immediate = false
+): UseAsyncReturn<T> {
+  const [state, setState] = useState<UseAsyncState<T>>({
+    data: null,
+    loading: false,
+    error: null
+  });
+
+  const execute = useCallback(async (...args: any[]) => {
+    setState(prev => ({ ...prev, loading: true, error: null }));
+    
+    try {
+      const data = await asyncFunction(...args);
+      setState({ data, loading: false, error: null });
+      return data;
+    } catch (error) {
+      setState({ data: null, loading: false, error: error as Error });
+      throw error;
+    }
+  }, [asyncFunction]);
+
+  const reset = useCallback(() => {
+    setState({ data: null, loading: false, error: null });
+  }, []);
+
+  useEffect(() => {
+    if (immediate) {
+      execute();
+    }
+  }, [execute, immediate]);
+
+  return { ...state, execute, reset };
+}
+
+// Usage
+async function fetchUserData(userId: string) {
+  const response = await fetch(\`/api/users/\${userId}\`);
+  if (!response.ok) throw new Error('Failed to fetch user');
+  return response.json();
+}
+
+function UserProfile({ userId }: { userId: string }) {
+  const {
+    data: user,
+    loading,
+    error,
+    execute: refetchUser
+  } = useAsync(() => fetchUserData(userId), true);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  if (!user) return <div>No user found</div>;
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+      <button onClick={refetchUser}>Refresh</button>
+    </div>
+  );
+}
+\`\`\`
+
+### 5. useDebounce - Debounced Values
+
+\`\`\`typescript
+export function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
+// Advanced debounced callback
+export function useDebouncedCallback<T extends (...args: any[]) => any>(
+  callback: T,
+  delay: number
+): T {
+  const callbackRef = useRef(callback);
+  callbackRef.current = callback;
+
+  const debouncedCallback = useMemo(() => {
+    return debounce((...args: Parameters<T>) => {
+      callbackRef.current(...args);
+    }, delay) as T;
+  }, [delay]);
+
+  useEffect(() => {
+    return () => {
+      debouncedCallback.cancel?.();
+    };
+  }, [debouncedCallback]);
+
+  return debouncedCallback;
+}
+
+// Usage
+function SearchInput() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const [results, setResults] = useState([]);
+
+  // Search API call with debounced term
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      fetch(\`/api/search?q=\${debouncedSearchTerm}\`)
+        .then(response => response.json())
+        .then(setResults);
+    }
+  }, [debouncedSearchTerm]);
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Search..."
+      />
+      <div>
+        {results.map(result => (
+          <div key={result.id}>{result.title}</div>
+        ))}
+      </div>
+    </div>
+  );
+}
+\`\`\`
+
+### 6. useLocalStorage - Persistent State
+
+\`\`\`typescript
+export function useLocalStorage<T>(
+  key: string,
+  initialValue: T
+): [T, (value: T | ((prev: T) => T)) => void] {
+  // Get value from localStorage on initialization
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    try {
+      const storageItem = window.localStorage.getItem(key);
+      return storageItem ? JSON.parse(storageItem) : initialValue;
+    } catch (error) {
+      console.warn(\`Error reading localStorage key "\${key}":\`, error);
+      return initialValue;
+    }
+  });
+
+  // Return a wrapped version of useState's setter function that persists to localStorage
+  const setValue = useCallback((value: T | ((prev: T) => T)) => {
+    try {
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.warn(\`Error setting localStorage key "\${key}":\`, error);
+    }
+  }, [key, storedValue]);
+
+  return [storedValue, setValue];
+}
+
+// Usage
+function Settings() {
+  const [theme, setTheme] = useLocalStorage('theme', 'light');
+  const [language, setLanguage] = useLocalStorage('language', 'en');
+
+  return (
+    <div>
+      <select value={theme} onChange={(e) => setTheme(e.target.value)}>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+      
+      <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+        <option value="en">English</option>
+        <option value="es">Spanish</option>
+        <option value="fr">French</option>
+      </select>
+    </div>
+  );
+}
+\`\`\`
+
+## Advanced Composition Patterns
+
+### Combining Multiple Hooks
+
+\`\`\`typescript
+// Complex form hook combining multiple patterns
+interface UseFormReturn<T> {
+  values: T;
+  errors: Record<keyof T, string>;
+  touched: Record<keyof T, boolean>;
+  isValid: boolean;
+  isSubmitting: boolean;
+  handleChange: (field: keyof T) => (value: any) => void;
+  handleBlur: (field: keyof T) => () => void;
+  handleSubmit: (onSubmit: (values: T) => Promise<void>) => (e: React.FormEvent) => void;
+  reset: () => void;
+  setFieldValue: (field: keyof T, value: any) => void;
+  setFieldError: (field: keyof T, error: string) => void;
+}
+
+export function useForm<T extends Record<string, any>>(
+  initialValues: T,
+  validationSchema?: (values: T) => Record<keyof T, string>
+): UseFormReturn<T> {
+  const [values, setValues] = useState<T>(initialValues);
+  const [errors, setErrors] = useState<Record<keyof T, string>>({} as Record<keyof T, string>);
+  const [touched, setTouched] = useState<Record<keyof T, boolean>>({} as Record<keyof T, boolean>);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Validate form
+  const validate = useCallback((formValues: T) => {
+    if (!validationSchema) return {};
+    return validationSchema(formValues);
+  }, [validationSchema]);
+
+  // Check if form is valid
+  const isValid = useMemo(() => {
+    const currentErrors = validate(values);
+    return Object.keys(currentErrors).length === 0;
+  }, [values, validate]);
+
+  // Handle field changes
+  const handleChange = useCallback((field: keyof T) => (value: any) => {
+    setValues(prev => ({ ...prev, [field]: value }));
+    
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  }, [errors]);
+
+  // Handle field blur
+  const handleBlur = useCallback((field: keyof T) => () => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    
+    // Validate field on blur
+    const fieldErrors = validate(values);
+    if (fieldErrors[field]) {
+      setErrors(prev => ({ ...prev, [field]: fieldErrors[field] }));
+    }
+  }, [values, validate]);
+
+  // Handle form submission
+  const handleSubmit = useCallback((onSubmit: (values: T) => Promise<void>) => {
+    return async (e: React.FormEvent) => {
+      e.preventDefault();
+      
+      const formErrors = validate(values);
+      setErrors(formErrors as Record<keyof T, string>);
+      
+      if (Object.keys(formErrors).length === 0) {
+        setIsSubmitting(true);
+        try {
+          await onSubmit(values);
+        } catch (error) {
+          console.error('Form submission error:', error);
+        } finally {
+          setIsSubmitting(false);
+        }
+      }
+    };
+  }, [values, validate]);
+
+  // Reset form
+  const reset = useCallback(() => {
+    setValues(initialValues);
+    setErrors({} as Record<keyof T, string>);
+    setTouched({} as Record<keyof T, boolean>);
+    setIsSubmitting(false);
+  }, [initialValues]);
+
+  // Set individual field value
+  const setFieldValue = useCallback((field: keyof T, value: any) => {
+    setValues(prev => ({ ...prev, [field]: value }));
+  }, []);
+
+  // Set individual field error
+  const setFieldError = useCallback((field: keyof T, error: string) => {
+    setErrors(prev => ({ ...prev, [field]: error }));
+  }, []);
+
+  return {
+    values,
+    errors,
+    touched,
+    isValid,
+    isSubmitting,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    reset,
+    setFieldValue,
+    setFieldError
+  };
+}
+\`\`\`
+
+## Best Practices for Custom Hooks
+
+1. **Start with useState and useEffect**: Build complex hooks by combining simpler ones
+2. **Use useCallback and useMemo**: Optimize performance by memoizing functions and values
+3. **Handle cleanup properly**: Always clean up subscriptions and timeouts
+4. **Make hooks testable**: Extract logic that can be unit tested
+5. **Follow naming conventions**: Always start custom hook names with "use"
+6. **Keep them focused**: Each hook should have a single responsibility
+7. **Provide good TypeScript types**: Make your hooks type-safe and developer-friendly
+
+These advanced patterns have transformed how I build React applications, making my code more reusable, testable, and maintainable.`,
+    author: {
+      name: "Chandrashekar",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
+    },
+    publishedDate: "2024-01-04",
+    readTime: 18,
+    tags: ["React", "Custom Hooks", "State Management", "TypeScript", "Advanced Patterns"],
     category: "Development",
     featuredImage: blogPost3,
     featured: false
   }
 ];
 
-export const categories = ["All", "Development", "Content Management", "Design", "Tools"];
-
-export const tags = [
-  "React", "TypeScript", "Performance", "Server Components", "Next.js",
-  "React Query", "TanStack", "Data Fetching", "State Management", "Type Safety",
-  "Generics", "React 18", "Concurrent Features", "useTransition", "Suspense",
-  "CSS-in-JS", "Styled Components", "Emotion", "Vanilla Extract", "Development",
-  "localStorage", "Hooks", "Persistence", "Git", "Version Control", "Developer Tools",
-  "Workflow", "Commands", "Custom Hooks", "Patterns"
+// Categories for filtering
+export const categories = [
+  "All",
+  "Development",
+  "Performance",
+  "Best Practices",
+  "Tutorial"
 ];
+
+// Helper function to get featured posts
+export const getFeaturedPosts = () => blogPosts.filter(post => post.featured);
+
+// Helper function to get posts by category
+export const getPostsByCategory = (category: string) => {
+  if (category === "All") return blogPosts;
+  return blogPosts.filter(post => post.category === category);
+};
+
+// Helper function to search posts
+export const searchPosts = (query: string) => {
+  const lowercaseQuery = query.toLowerCase();
+  return blogPosts.filter(post => 
+    post.title.toLowerCase().includes(lowercaseQuery) ||
+    post.excerpt.toLowerCase().includes(lowercaseQuery) ||
+    post.tags.some(tag => tag.toLowerCase().includes(lowercaseQuery)) ||
+    post.content.toLowerCase().includes(lowercaseQuery)
+  );
+};
