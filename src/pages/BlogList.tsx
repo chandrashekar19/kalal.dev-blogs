@@ -49,7 +49,7 @@ const BlogList = () => {
             </div>
             
             <h1 className="text-4xl md:text-6xl font-heading font-bold text-blog-primary-foreground mb-6 leading-tight">
-              Chandrashekar's
+              kalal.dev
               <span className="block text-blog-secondary-foreground">Tech Insights</span>
             </h1>
             
