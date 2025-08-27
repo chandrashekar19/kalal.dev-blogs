@@ -28,6 +28,284 @@ export interface BlogPost {
 export const blogPosts: BlogPost[] = [
   {
     id: "1",
+    title: "Automate NPM Package Publishing with GitHub Actions CI/CD",
+    slug: "automate-npm-package-publishing-github-actions-cicd",
+    excerpt: "Complete guide to setting up automated CI/CD workflows for publishing NPM packages using GitHub Actions. Learn to configure workflows, manage secrets, and automate releases.",
+    content: `# Automate NPM Package Publishing with GitHub Actions CI/CD
+
+As a React developer, I've learned that automating package publishing saves countless hours and reduces human error. Today I'll walk you through setting up a complete CI/CD pipeline for NPM package publishing using GitHub Actions.
+
+## Project Setup for NPM Package
+
+### 1. Initialize Your React + Vite Project
+
+Start with a fresh React + Vite project:
+
+\`\`\`bash
+npm create vite@latest my-npm-package -- --template react-ts
+cd my-npm-package
+npm install
+\`\`\`
+
+### 2. Clean Up for Package Development
+
+Since we're creating a reusable package, remove unnecessary folders:
+
+\`\`\`bash
+# Remove these folders as they're not needed for packages
+rm -rf src public
+mkdir src && mkdir lib
+\`\`\`
+
+### 3. Configure package.json
+
+Update your \`package.json\` for NPM publishing:
+
+\`\`\`json
+{
+  "name": "@your-username/your-package-name",
+  "version": "1.0.0",
+  "description": "Your awesome React component library",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["react", "components", "ui"],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/your-package-name.git"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  }
+}
+\`\`\`
+
+## GitHub Actions Workflow Configuration
+
+### 4. Create the Workflow File
+
+Create \`.github/workflows/publish-npm.yml\`:
+
+\`\`\`yaml
+name: Publish NPM Package
+
+on:
+  push:
+    branches: [ main, master ]
+  release:
+    types: [ published ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js \${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: \${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run tests
+      run: npm test
+      
+    - name: Build package
+      run: npm run build
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        registry-url: 'https://registry.npmjs.org'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build package
+      run: npm run build
+      
+    - name: Publish to NPM
+      run: npm publish --access public
+      env:
+        NODE_AUTH_TOKEN: \${{ secrets.NPM_TOKEN }}
+\`\`\`
+
+## Setting Up NPM Authentication
+
+### 5. Create NPM Access Token
+
+1. **Login to NPM**: Visit [npmjs.com](https://www.npmjs.com/) and sign in
+2. **Generate Token**: Go to Account Settings → Access Tokens → Generate New Token
+3. **Choose Token Type**: Select "Automation" for CI/CD use
+4. **Copy Token**: Save it immediately - it won't be shown again!
+
+### 6. Configure GitHub Secrets
+
+1. Go to your GitHub repository
+2. Navigate to **Settings** → **Secrets and variables** → **Actions**
+3. Click **New repository secret**
+4. Name: \`NPM_TOKEN\`
+5. Value: Paste your NPM access token
+6. Click **Add secret**
+
+## Advanced Workflow Features
+
+### 7. Version Management
+
+Add automatic version bumping:
+
+\`\`\`yaml
+- name: Bump version
+  run: npm version patch
+  
+- name: Push changes
+  run: |
+    git config --local user.email "action@github.com"
+    git config --local user.name "GitHub Action"
+    git push --follow-tags
+\`\`\`
+
+### 8. Conditional Publishing
+
+Trigger publishing with commit messages:
+
+\`\`\`yaml
+if: contains(github.event.head_commit.message, '[publish]')
+\`\`\`
+
+### 9. Security Auditing
+
+Add security checks to your workflow:
+
+\`\`\`yaml
+security-audit:
+  runs-on: ubuntu-latest
+  steps:
+  - uses: actions/checkout@v4
+  - uses: actions/setup-node@v4
+    with:
+      node-version: '20.x'
+  - run: npm ci
+  - run: npm audit --audit-level high
+\`\`\`
+
+## Testing Your Workflow
+
+### 10. Local Testing
+
+Before pushing, test locally:
+
+\`\`\`bash
+# Install dependencies
+npm ci
+
+# Run tests
+npm test
+
+# Build package
+npm run build
+
+# Test publish (dry run)
+npm publish --dry-run
+\`\`\`
+
+### 11. Workflow Triggers
+
+Your workflow will trigger on:
+
+- **Push to main/master**: Runs tests only
+- **Release creation**: Runs tests and publishes
+- **Manual trigger**: Via GitHub UI
+
+## Best Practices I've Learned
+
+1. **Always use npm ci** in CI environments for consistent installs
+2. **Test on multiple Node versions** to ensure compatibility
+3. **Use semantic versioning** for clear release management
+4. **Include security audits** to catch vulnerabilities early
+5. **Set up branch protection** to prevent accidental publishes
+
+## Package Structure Example
+
+Here's how I structure my packages:
+
+\`\`\`
+my-package/
+├── .github/
+│   └── workflows/
+│       └── publish-npm.yml
+├── lib/
+│   ├── components/
+│   ├── hooks/
+│   └── index.ts
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+└── README.md
+\`\`\`
+
+## Troubleshooting Common Issues
+
+### Authentication Failures
+- Verify NPM_TOKEN is correctly set in GitHub secrets
+- Ensure token has publish permissions
+- Check token hasn't expired
+
+### Build Failures
+- Verify all dependencies are listed in package.json
+- Test build locally before pushing
+- Check Node.js version compatibility
+
+### Version Conflicts
+- Use \`npm version\` commands for proper versioning
+- Consider using conventional commits for automated versioning
+
+This automated approach has saved me hours of manual work and eliminated publishing errors. The workflow ensures consistent testing, building, and publishing every time.`,
+    author: {
+      name: "Chandrashekar",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
+    },
+    publishedDate: "2024-01-22",
+    readTime: 15,
+    tags: ["GitHub Actions", "CI/CD", "NPM", "Automation", "DevOps", "React"],
+    category: "DevOps",
+    featuredImage: blogPost1,
+    featured: true
+  },
+  {
+    id: "2",
     title: "React Server Components: The Future of Full-Stack Development",
     slug: "react-server-components-future-fullstack-development",
     excerpt: "Dive deep into React Server Components and how they're revolutionizing the way we build modern web applications. Learn the patterns, performance benefits, and implementation strategies.",
@@ -2394,6 +2672,7 @@ These advanced patterns have transformed how I build React applications, making 
 export const categories = [
   "All",
   "Development",
+  "DevOps",
   "Performance",
   "Best Practices",
   "Tutorial"
