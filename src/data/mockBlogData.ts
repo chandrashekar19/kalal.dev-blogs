@@ -1181,9 +1181,9 @@ function ShoppingCartWithReducer() {
 
   return (
     <div>
-      {cartState.items.map(item => (
+      {cartState.items.map((item) => (
         <div key={item.id}>
-          {item.name} - ${item.price} x {item.quantity}
+          {item.name} - \${item.price} x {item.quantity}
           <button onClick={() => removeItem(item.id)}>Remove</button>
         </div>
       ))}
