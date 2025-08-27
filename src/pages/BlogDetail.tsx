@@ -3,19 +3,23 @@ import { ArrowLeft, Calendar, Clock, User, Share2, BookOpen } from "lucide-react
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { blogPosts } from "@/data/mockBlogData";
+import { blogPosts } from "@/mock/blogs";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github-dark.css"; // ✅ choose any hljs theme
 
 const BlogDetail = () => {
   const { slug } = useParams<{ slug: string }>();
-  
-  const post = blogPosts.find(p => p.slug === slug);
-  
+
+  const post = blogPosts.find((p) => p.slug === slug);
+
   if (!post) {
     return <Navigate to="/404" replace />;
   }
 
   const relatedPosts = blogPosts
-    .filter(p => p.id !== post.id && p.category === post.category)
+    .filter((p) => p.id !== post.id && p.category === post.category)
     .slice(0, 3);
 
   return (
@@ -23,9 +27,9 @@ const BlogDetail = () => {
       {/* Navigation */}
       <div className="bg-blog-surface-elevation border-b border-blog-primary/10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Button 
+          <Button
             asChild
-            variant="ghost" 
+            variant="ghost"
             className="text-blog-text-secondary hover:text-blog-primary hover:bg-blog-primary-muted"
           >
             <Link to="/" className="flex items-center gap-2">
@@ -40,8 +44,8 @@ const BlogDetail = () => {
       <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <header className="mb-12">
           <div className="flex items-center gap-4 mb-6">
-            <Badge 
-              variant="secondary" 
+            <Badge
+              variant="secondary"
               className="bg-blog-primary-muted text-blog-primary border-0"
             >
               {post.category}
@@ -49,11 +53,13 @@ const BlogDetail = () => {
             <div className="flex items-center gap-4 text-blog-text-muted text-sm">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
-                <span>{new Date(post.publishedDate).toLocaleDateString('en-US', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}</span>
+                <span>
+                  {new Date(post.publishedDate).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
@@ -81,13 +87,17 @@ const BlogDetail = () => {
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <User className="w-4 h-4 text-blog-text-muted" />
-                  <span className="font-medium text-blog-text-primary">{post.author.name}</span>
+                  <span className="font-medium text-blog-text-primary">
+                    {post.author.name}
+                  </span>
                 </div>
-                <p className="text-sm text-blog-text-secondary">{post.author.bio}</p>
+                <p className="text-sm text-blog-text-secondary">
+                  {post.author.bio}
+                </p>
               </div>
             </div>
-            
-            <Button 
+
+            <Button
               variant="outline"
               size="sm"
               className="border-blog-primary/20 text-blog-text-secondary hover:bg-blog-primary-muted hover:text-blog-primary"
@@ -108,41 +118,25 @@ const BlogDetail = () => {
         </header>
 
         {/* Article Content */}
-        <div className="max-w-none mb-12">
-          {(() => {
-            const html = post.content
-              // Code blocks first (supports multiple languages)
-              .replace(/```(typescript|tsx|jsx|javascript|json|bash|shell)\n([\s\S]*?)\n```/g, '<pre class="bg-blog-surface-elevation border border-blog-primary/10 rounded-xl p-4 md:p-5 mb-6 overflow-x-auto shadow-sm"><code class="font-mono text-sm leading-7 text-blog-text-primary">$2</code></pre>')
-              // Headings
-              .replace(/^### (.+)$/gm, '<h3 class="text-xl font-heading font-semibold text-blog-text-primary mb-3 mt-6">$1<\/h3>')
-              .replace(/^## (.+)$/gm, '<h2 class="text-2xl font-heading font-bold text-blog-text-primary mb-4 mt-8">$1<\/h2>')
-              .replace(/^# (.+)$/gm, '<h1 class="text-3xl md:text-4xl font-heading font-bold text-blog-text-primary mb-6 mt-8">$1<\/h1>')
-              // Inline code and strong
-              .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-blog-text-primary">$1<\/strong>')
-              .replace(/`([^`]+)`/g, '<code class="bg-blog-surface-elevation px-2 py-1 rounded text-sm font-mono text-blog-primary">$1<\/code>')
-              // Paragraphs: wrap lines that are not already HTML blocks
-              .replace(/\n{2,}/g, '</p><p class="mb-4 leading-relaxed">')
-              .replace(/^((?!<h1|<h2|<h3|<pre|<ul|<ol|<li|<\/li|<\/ul|<\/ol|<p|<\/p).+)$|^(?!\s*$).+$/gm, (m) => {
-                if (/^\s*$/.test(m) || m.trim().startsWith('<')) return m;
-                return `<p class="mb-4 leading-relaxed">${m}</p>`;
-              });
-            return (
-              <div
-                className="prose prose-lg max-w-none text-blog-text-primary leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: html }}
-              />
-            );
-          })()}
+        <div className="prose prose-lg max-w-none mb-12 text-blog-text-primary leading-relaxed">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeHighlight]}
+          >
+            {post.content}
+          </ReactMarkdown>
         </div>
 
         {/* Tags */}
         <div className="border-t border-blog-primary/10 pt-8 mb-12">
-          <h3 className="text-lg font-heading font-semibold text-blog-text-primary mb-4">Tags</h3>
+          <h3 className="text-lg font-heading font-semibold text-blog-text-primary mb-4">
+            Tags
+          </h3>
           <div className="flex flex-wrap gap-2">
             {post.tags.map((tag) => (
-              <Badge 
-                key={tag} 
-                variant="outline" 
+              <Badge
+                key={tag}
+                variant="outline"
                 className="border-blog-primary/20 text-blog-text-muted hover:bg-blog-primary-muted hover:text-blog-primary transition-colors duration-200"
               >
                 {tag}
@@ -158,12 +152,14 @@ const BlogDetail = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
             <div className="flex items-center gap-3 mb-8">
               <BookOpen className="w-6 h-6 text-blog-primary" />
-              <h2 className="text-3xl font-heading font-bold text-blog-text-primary">Related Articles</h2>
+              <h2 className="text-3xl font-heading font-bold text-blog-text-primary">
+                Related Articles
+              </h2>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {relatedPosts.map((relatedPost) => (
-                <Card 
+                <Card
                   key={relatedPost.id}
                   className="group overflow-hidden bg-blog-surface shadow-blog-card hover:shadow-blog-card-hover transition-all duration-300 transform hover:-translate-y-1"
                 >
@@ -175,19 +171,19 @@ const BlogDetail = () => {
                         className="aspect-[4/3] w-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
-                    
+
                     <CardContent className="p-6">
-                      <Badge 
-                        variant="secondary" 
+                      <Badge
+                        variant="secondary"
                         className="bg-blog-primary-muted text-blog-primary border-0 mb-3"
                       >
                         {relatedPost.category}
                       </Badge>
-                      
+
                       <h3 className="font-heading font-bold text-blog-text-primary mb-3 group-hover:text-blog-primary transition-colors duration-200 leading-tight">
                         {relatedPost.title}
                       </h3>
-                      
+
                       <p className="text-blog-text-secondary text-sm leading-relaxed line-clamp-2">
                         {relatedPost.excerpt}
                       </p>

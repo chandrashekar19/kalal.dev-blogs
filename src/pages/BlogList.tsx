@@ -5,8 +5,9 @@ import { BlogCard } from "@/components/BlogCard";
 import { SearchBar } from "@/components/SearchBar";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { Button } from "@/components/ui/button";
-import { blogPosts, categories } from "@/data/mockBlogData";
 import blogHeroImage from "@/assets/blog-hero.jpg";
+import { blogPosts } from "@/mock/blogs";
+import { categories } from "@/mock/constants";
 
 const BlogList = () => {
   const [searchQuery, setSearchQuery] = useState("");

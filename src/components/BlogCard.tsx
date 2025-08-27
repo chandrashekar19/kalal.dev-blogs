@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { Calendar, Clock, User } from "lucide-react";
-import { BlogPost } from "@/data/mockBlogData";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { BlogPost } from "@/types/blog-post";
 
 interface BlogCardProps {
   post: BlogPost;
