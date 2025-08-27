@@ -108,23 +108,31 @@ const BlogDetail = () => {
         </header>
 
         {/* Article Content */}
-        <div className="prose prose-lg max-w-none mb-12">
-          <div 
-            className="text-blog-text-primary leading-relaxed"
-            dangerouslySetInnerHTML={{ 
-              __html: post.content
-                .replace(/^# /gm, '<h1 class="text-3xl font-heading font-bold text-blog-text-primary mb-6 mt-8">')
-                .replace(/^## /gm, '<h2 class="text-2xl font-heading font-bold text-blog-text-primary mb-4 mt-8">')
-                .replace(/^### /gm, '<h3 class="text-xl font-heading font-semibold text-blog-text-primary mb-3 mt-6">')
-                .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-blog-text-primary">$1</strong>')
-                .replace(/\n\n/g, '</p><p class="mb-4 leading-relaxed">')
-                .replace(/^(.+)$/gm, '<p class="mb-4 leading-relaxed">$1</p>')
-                .replace(/```javascript\n([\s\S]*?)\n```/g, '<pre class="bg-blog-surface-elevation rounded-lg p-4 mb-6 overflow-x-auto"><code class="text-sm text-blog-text-primary">$1</code></pre>')
-                .replace(/```css\n([\s\S]*?)\n```/g, '<pre class="bg-blog-surface-elevation rounded-lg p-4 mb-6 overflow-x-auto"><code class="text-sm text-blog-text-primary">$1</code></pre>')
-                .replace(/```graphql\n([\s\S]*?)\n```/g, '<pre class="bg-blog-surface-elevation rounded-lg p-4 mb-6 overflow-x-auto"><code class="text-sm text-blog-text-primary">$1</code></pre>')
-                .replace(/`([^`]+)`/g, '<code class="bg-blog-surface-elevation px-2 py-1 rounded text-sm text-blog-primary">$1</code>')
-            }}
-          />
+        <div className="max-w-none mb-12">
+          {(() => {
+            const html = post.content
+              // Code blocks first (supports multiple languages)
+              .replace(/```(typescript|tsx|jsx|javascript|json|bash|shell)\n([\s\S]*?)\n```/g, '<pre class="bg-blog-surface-elevation border border-blog-primary/10 rounded-xl p-4 md:p-5 mb-6 overflow-x-auto shadow-sm"><code class="font-mono text-sm leading-7 text-blog-text-primary">$2</code></pre>')
+              // Headings
+              .replace(/^### (.+)$/gm, '<h3 class="text-xl font-heading font-semibold text-blog-text-primary mb-3 mt-6">$1<\/h3>')
+              .replace(/^## (.+)$/gm, '<h2 class="text-2xl font-heading font-bold text-blog-text-primary mb-4 mt-8">$1<\/h2>')
+              .replace(/^# (.+)$/gm, '<h1 class="text-3xl md:text-4xl font-heading font-bold text-blog-text-primary mb-6 mt-8">$1<\/h1>')
+              // Inline code and strong
+              .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-blog-text-primary">$1<\/strong>')
+              .replace(/`([^`]+)`/g, '<code class="bg-blog-surface-elevation px-2 py-1 rounded text-sm font-mono text-blog-primary">$1<\/code>')
+              // Paragraphs: wrap lines that are not already HTML blocks
+              .replace(/\n{2,}/g, '</p><p class="mb-4 leading-relaxed">')
+              .replace(/^((?!<h1|<h2|<h3|<pre|<ul|<ol|<li|<\/li|<\/ul|<\/ol|<p|<\/p).+)$|^(?!\s*$).+$/gm, (m) => {
+                if (/^\s*$/.test(m) || m.trim().startsWith('<')) return m;
+                return `<p class="mb-4 leading-relaxed">${m}</p>`;
+              });
+            return (
+              <div
+                className="prose prose-lg max-w-none text-blog-text-primary leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
+            );
+          })()}
         </div>
 
         {/* Tags */}
