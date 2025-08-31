@@ -1,8 +1,4 @@
-import blogPost1 from '@/assets/blog-post-1.jpg';
-import blogPost2 from '@/assets/blog-post-2.jpg';
-import blogPost3 from '@/assets/blog-post-3.jpg';
-import blogPost4 from '@/assets/blog-post-4.jpg';
-import blogPost5 from '@/assets/blog-post-5.jpg';
+
 import { BlogPost } from '@/types/blog-post';
 import reactServerComponents from "./tech/react-server.md?raw";
 import reactQueryV5 from "./tech/react-query.md?raw";
@@ -25,14 +21,14 @@ export const blogPosts: BlogPost[] = [
     content: reactServerComponents,
     author: {
       name: "Chandrashekar",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      avatar: "/profile.jpg",
       bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
     },
     publishedDate: "2024-01-20",
     readTime: 12,
     tags: ["React", "Server Components", "Next.js", "Performance", "Full-Stack"],
     category: "Development",
-    featuredImage: blogPost1,
+    featuredImage: "/react-1.jpg",
     featured: true
   },
   {
@@ -43,14 +39,14 @@ export const blogPosts: BlogPost[] = [
     content: reactQueryV5,
     author: {
       name: "Chandrashekar",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      avatar: "/profile.jpg",
       bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
     },
     publishedDate: "2024-01-18",
     readTime: 10,
     tags: ["React Query", "TanStack", "Data Fetching", "Performance", "State Management"],
     category: "Development",
-    featuredImage: blogPost2,
+    featuredImage: "/react-query.png",
     featured: true
   },
   {
@@ -61,14 +57,14 @@ export const blogPosts: BlogPost[] = [
     content: TypeSafe,
     author: {
       name: "Chandrashekar",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      avatar: "/profile.jpg",
       bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
     },
     publishedDate: "2024-01-15",
     readTime: 11,
     tags: ["TypeScript", "React", "Type Safety", "Generics", "Development"],
     category: "Development",
-    featuredImage: blogPost3,
+    featuredImage: "/typescript.jpeg",
     featured: false
   },
   {
@@ -79,14 +75,14 @@ export const blogPosts: BlogPost[] = [
     content: jsAZ,
     author: {
       name: "Chandrashekar",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      avatar: "/profile.jpg",
       bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
     },
     publishedDate: "2024-01-12",
     readTime: 15,
     tags: ["JavaScript", "Programming", "Web Development", "Reference", "ES6"],
     category: "Development",
-    featuredImage: blogPost4,
+    featuredImage: "/a-to-z.jpg",
     featured: false
   },
   {
@@ -97,14 +93,14 @@ export const blogPosts: BlogPost[] = [
     content: AemGuide,
     author: {
       name: "Chandrashekar",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      avatar: "/profile.jpg",
       bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
     },
     publishedDate: "2024-01-10",
     readTime: 14,
     tags: ["AEM", "React", "Adobe Experience Manager", "Integration", "Enterprise"],
     category: "Development",
-    featuredImage: blogPost5,
+    featuredImage: "/aem.png",
     featured: true
   },
   {
@@ -115,14 +111,14 @@ export const blogPosts: BlogPost[] = [
     content: PersistState,
     author: {
       name: "Chandrashekar",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      avatar: "/profile.jpg",
       bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
     },
     publishedDate: "2024-01-08",
     readTime: 13,
     tags: ["React", "localStorage", "State Management", "Hooks", "Persistence"],
     category: "Development",
-    featuredImage: blogPost1,
+    featuredImage: "/react-2.jpg",
     featured: false
   },
   {
@@ -133,14 +129,14 @@ export const blogPosts: BlogPost[] = [
     content: GitCommands,
     author: {
       name: "Chandrashekar",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      avatar: "/profile.jpg",
       bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
     },
     publishedDate: "2024-01-06",
     readTime: 16,
     tags: ["Git", "Version Control", "Development", "Command Line", "Workflow"],
     category: "Development",
-    featuredImage: blogPost2,
+    featuredImage: "/git.jpeg",
     featured: false
   },
   {
@@ -151,14 +147,14 @@ export const blogPosts: BlogPost[] = [
     content: CustomHooks,
     author: {
       name: "Chandrashekar",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      avatar: "/profile.jpg",
       bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
     },
     publishedDate: "2024-01-04",
     readTime: 18,
     tags: ["React", "Custom Hooks", "State Management", "TypeScript", "Advanced Patterns"],
     category: "Development",
-    featuredImage: blogPost3,
+    featuredImage: "/react-1.jpg",
     featured: false
   },
   {
@@ -169,14 +165,14 @@ export const blogPosts: BlogPost[] = [
     content: npmPublish,
     author: {
       name: "Chandrashekar",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      avatar: "/profile.jpg",
       bio: "React Developer with 3+ years experience, passionate about modern web technologies and performance optimization"
     },
     publishedDate: "2024-01-02",
     readTime: 9,
     tags: ["NPM", "JavaScript", "Open Source", "Package Publishing", "Development"],
     category: "Development",
-    featuredImage: blogPost4,
+    featuredImage: "/npm.jpeg",
     featured: false
 
   }
