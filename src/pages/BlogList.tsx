@@ -5,7 +5,6 @@ import { BlogCard } from "@/components/BlogCard";
 import { SearchBar } from "@/components/SearchBar";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { Button } from "@/components/ui/button";
-import blogHeroImage from "@/assets/blog-hero.jpg";
 import { blogPosts } from "@/mock/blogs";
 import { categories } from "@/mock/constants";
 
@@ -36,9 +35,9 @@ const BlogList = () => {
         <div className="absolute inset-0 bg-black/20" />
         <div className="absolute inset-0">
           <img 
-            src={blogHeroImage} 
+            src="/blog.jpg"
             alt="Blog Hero" 
-            className="w-full h-full object-cover opacity-30"
+            className="w-full h-full object-cover opacity-20"
           />
         </div>
         
