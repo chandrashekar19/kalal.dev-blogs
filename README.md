@@ -88,7 +88,7 @@ src/
    ```
 
 2. **Update blog data**
-   Add post metadata to `src/data/mockBlogData.ts`:
+   Add post metadata to `src/data/mock.ts`:
    ```typescript
    {
      id: 'unique-id',
